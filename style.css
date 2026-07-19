@@ -157,7 +157,7 @@ button, input {
 }
 
 .field-label {
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--text-secondary);
 }
@@ -209,7 +209,7 @@ button, input {
 .btn--reset {
   width: auto;
   align-self: flex-end;
-  padding: 4px 12px;
+  padding: 4.5px 12px;
   font-size: 14px;
   margin-top: 4px;
 }
