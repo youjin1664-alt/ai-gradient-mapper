@@ -67,7 +67,7 @@ AGM.DEFAULT_PALETTE = [
 
 AGM.DEFAULT_SETTINGS = {
   circleSize: 18, // px, 1-80
-  density: 50, // 1-100
+  density: 74, // 1-100
   overlap: 50, // 0-100
   opacity: 100, // fixed, not user-editable — kept only so paintCircles()'s signature is untouched
   randomSize: 30, // 0-100
