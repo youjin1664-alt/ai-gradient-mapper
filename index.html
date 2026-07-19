@@ -10,87 +10,69 @@
 
   <!-- ============ HEADER ============ -->
   <header class="app-header">
-    <div class="app-header__brand">
-      <span class="app-header__mark"></span>
-      <span class="app-header__title">AI Gradient Mapper</span>
-    </div>
-    <div class="app-header__sub">Circle-based color mask generator</div>
+    <img class="app-header__logo" src="images/Logo.svg" alt="every else" />
   </header>
 
   <div class="app-shell">
 
-    <!-- ============ LEFT PANEL ============ -->
-    <aside class="panel panel--left">
-      <section class="panel-block">
-        <h2 class="panel-block__title">Image</h2>
-        <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp" hidden />
+    <!-- ============ LEFT GLASS PANEL ============ -->
+    <aside class="glass-panel glass-panel--left">
+      <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp" hidden />
+
+      <div class="field-group">
+        <span class="field-label">Image</span>
         <button class="btn btn--primary" id="uploadBtn">Upload Image</button>
         <div class="file-meta" id="fileMeta">No image loaded</div>
-      </section>
-
-      <section class="panel-block">
-        <h2 class="panel-block__title">Export</h2>
-        <button class="btn" id="exportPngBtn">Export PNG</button>
-        <button class="btn" id="exportTransparentBtn">Export Transparent PNG</button>
-        <button class="btn" id="exportSvgBtn">Export SVG</button>
-      </section>
-
-      <section class="panel-block panel-block--push">
-        <button class="btn btn--ghost" id="resetBtn">Reset</button>
-      </section>
-    </aside>
-
-    <!-- ============ CENTER: CANVAS ============ -->
-    <main class="panel panel--center">
-      <div class="zoom-bar">
-        <button class="zoom-btn" data-zoom="0.25">25%</button>
-        <button class="zoom-btn" data-zoom="0.5">50%</button>
-        <button class="zoom-btn is-active" data-zoom="1">100%</button>
-        <button class="zoom-btn" data-zoom="2">200%</button>
-        <button class="zoom-btn" data-zoom="fit">Fit</button>
-        <span class="zoom-readout" id="zoomReadout">100%</span>
       </div>
 
+      <div class="field-group">
+        <span class="field-label">Export</span>
+        <button class="btn" id="exportBtn">
+          Export Image
+          <img class="btn__icon" src="images/export logo.svg" alt="" />
+        </button>
+      </div>
+    </aside>
+
+    <!-- ============ CENTER: PILL PREVIEW ============ -->
+    <main class="pill-stage-wrapper">
       <div class="canvas-wrapper" id="canvasWrapper">
         <div class="canvas-stage" id="canvasStage">
-          <canvas id="artCanvas" width="900" height="900"></canvas>
-          <div class="canvas-empty" id="canvasEmpty">
-            <p>Upload a PNG, JPG or WEBP image to begin</p>
-          </div>
+          <canvas id="artCanvas" width="1200" height="780"></canvas>
         </div>
+      </div>
+
+      <div class="brush-toolbar">
+        <button class="brush-clear" id="clearMaskBtn">Clear Mask</button>
       </div>
     </main>
 
-    <!-- ============ RIGHT PANEL: PALETTE ============ -->
-    <aside class="panel panel--right">
-      <section class="panel-block">
-        <h2 class="panel-block__title">Palette Editor</h2>
-        <div class="palette-grid" id="paletteGrid"></div>
-        <div class="palette-actions">
-          <button class="btn btn--small" id="addColorBtn">Add Color</button>
-          <button class="btn btn--small" id="deleteColorBtn">Delete Color</button>
-          <button class="btn btn--small btn--ghost" id="resetPaletteBtn">Reset Palette</button>
+    <!-- ============ RIGHT GLASS PANEL: RENDER CONTROLS ============ -->
+    <aside class="glass-panel glass-panel--right">
+      <section class="panel-section">
+        <h2 class="panel-title">Render Controls</h2>
+        <div class="controls-grid" id="controlsGrid">
+          <!-- Slider rows are injected by controls.js -->
         </div>
+        <button class="btn btn--dark btn--reset" id="resetBtn">Reset</button>
       </section>
     </aside>
 
-    <!-- ============ BOTTOM PANEL: RENDER CONTROLS ============ -->
-    <section class="panel panel--bottom">
-      <h2 class="panel-block__title">Render Controls</h2>
-      <div class="controls-grid" id="controlsGrid">
-        <!-- Slider rows are injected by controls.js, but static markup kept for clarity/accessibility -->
-      </div>
-    </section>
-
   </div>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="app-footer">
+    <img class="app-footer__mark" src="images/footer.svg" alt="© every else. All rights reserved." />
+  </footer>
 
   <script src="js/config.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/state.js"></script>
   <script src="js/imageLoader.js"></script>
   <script src="js/circleEngine.js"></script>
+  <script src="js/circleAnimator.js"></script>
   <script src="js/canvasView.js"></script>
-  <script src="js/palette.js"></script>
+  <script src="js/maskPainter.js"></script>
   <script src="js/controls.js"></script>
   <script src="js/exporter.js"></script>
   <script src="js/main.js"></script>

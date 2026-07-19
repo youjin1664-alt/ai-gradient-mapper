@@ -7,10 +7,12 @@
 window.AGM = window.AGM || {};
 
 AGM.state = {
-  // Source image, downscaled to CONFIG.MAX_IMAGE_DIM, sampled for color.
+  // Grayscale, cover-fit-cropped ImageData at exactly CONFIG.FRAME_WIDTH x
+  // CONFIG.FRAME_HEIGHT — sampled for color by circleEngine.
   sourceImageData: null, // ImageData
-  sourceWidth: 0,
-  sourceHeight: 0,
+  // Cached <canvas> bitmap of the same grayscale image, used for fast
+  // drawImage-based compositing (ctx.clip() has no effect on putImageData).
+  photoCanvas: null,
   hasImage: false,
   fileName: "",
 
@@ -21,23 +23,18 @@ AGM.state = {
   // Render control values (see CONFIG.CONTROL_DEFS for bounds).
   settings: { ...AGM.DEFAULT_SETTINGS },
 
-  // Generated render units. Split so palette-only or opacity/softness-only
-  // changes can skip the expensive sampling step (see circleEngine.js).
-  baseCircles: [], // [{ x, y, radius, srgb:{r,g,b} }] — depends on image+geometry settings
+  // Generated render units. Split so palette-only changes can skip the
+  // expensive sampling step (see circleEngine.js).
+  baseCircles: [], // [{ x, y, radius, srgb:{r,g,b} }] — depends on image+mask+geometry settings
   circles: [], // baseCircles + { color:{r,g,b} } resolved against current palette
-
-  // View state
-  zoom: 1,
 };
 
 AGM.state.reset = function () {
   this.sourceImageData = null;
-  this.sourceWidth = 0;
-  this.sourceHeight = 0;
+  this.photoCanvas = null;
   this.hasImage = false;
   this.fileName = "";
   this.settings = { ...AGM.DEFAULT_SETTINGS };
   this.baseCircles = [];
   this.circles = [];
-  this.zoom = 1;
 };

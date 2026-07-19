@@ -5,13 +5,14 @@
    Pipeline (kept in three stages so slider changes only redo the work
    that's actually affected, which keeps live preview smooth):
 
-     1. sampleGrid()   image + geometry settings -> baseCircles (x, y, radius, srgb)
-     2. colorizeCircles() baseCircles + palette   -> circles (+ color)
-     3. paintCircles()  circles + opacity/softness -> pixels on a canvas
+     1. sampleGrid()   image + geometry settings + mask -> baseCircles (x, y, radius, srgb)
+     2. colorizeCircles() baseCircles + palette          -> circles (+ color)
+     3. paintCircles()  circles + opacity/softness        -> pixels on a canvas
 
-   Only circle SIZE, DENSITY, OVERLAP, RANDOM SIZE and RANDOM POSITION
-   require re-running stage 1. Palette edits (and COLOR MIX) only require
-   stage 2. Opacity and Edge Softness only require stage 3 (a fast repaint).
+   Only circle SIZE, DENSITY, OVERLAP, RANDOM SIZE, RANDOM POSITION and the
+   painted MASK require re-running stage 1. Palette edits (and COLOR MIX)
+   only require stage 2. Edge Softness only requires stage 3 (a fast
+   repaint). Opacity is fixed at 100 and no longer user-editable.
    ========================================================================== */
 
 window.AGM = window.AGM || {};
@@ -23,8 +24,13 @@ AGM.circleEngine = (function () {
    * Stage 1 — sample the source image on a jittered grid and produce the
    * geometric description of every circle (position + radius + the raw
    * sampled color, before palette matching).
+   *
+   * `maskData` is optional ImageData the same size as `imageData`; when
+   * given, grid points whose mask alpha is below CONFIG.MASK_ALPHA_THRESHOLD
+   * are skipped, so circles are only generated inside the user-painted mask.
+   * Omitting it samples the whole frame, same as before masking existed.
    */
-  function sampleGrid(imageData, width, height, settings) {
+  function sampleGrid(imageData, width, height, settings, maskData) {
     const rng = utils.makeRng(CONFIG.RNG_SEED);
     const { circleSize, density, overlap, randomSize, randomPosition } = settings;
 
@@ -32,6 +38,7 @@ AGM.circleEngine = (function () {
     const baseRadius = (circleSize / 2) * utils.lerp(0.6, 1.9, overlap / 100);
 
     const data = imageData.data;
+    const maskPixels = maskData ? maskData.data : null;
     const circles = [];
 
     // Brick-offset grid: alternate rows are shifted half a spacing unit for
@@ -52,6 +59,9 @@ AGM.circleEngine = (function () {
         // Skip fully transparent source pixels so cut-out / transparent
         // PNGs don't get circles over empty regions.
         if (a < 10) continue;
+
+        // Skip points outside the user-painted mask, if one is active.
+        if (maskPixels && maskPixels[idx + 3] < CONFIG.MASK_ALPHA_THRESHOLD) continue;
 
         const sizeJitter = 1 + (rng() * 2 - 1) * (randomSize / 100) * 0.9;
         const radius = Math.max(0.4, baseRadius * sizeJitter);

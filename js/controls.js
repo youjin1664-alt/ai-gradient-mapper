@@ -13,7 +13,9 @@ AGM.controls = (function () {
   const { state, CONFIG, canvasView, utils } = AGM;
 
   let gridEl;
-  const scheduleRegenerate = utils.rafThrottle(() => canvasView.regenerate());
+  // Regenerate is shared with maskPainter.js so a slider drag and a brush
+  // stroke in the same frame collapse into a single regenerate call.
+  const scheduleRegenerate = () => canvasView.scheduleRegenerate();
   const scheduleRecolor = utils.rafThrottle(() => canvasView.recolor());
   const scheduleRepaint = utils.rafThrottle(() => canvasView.repaint());
 

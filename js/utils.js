@@ -114,6 +114,22 @@ AGM.utils = (function () {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
+  // Synchronously decodes a data: URL (e.g. canvas.toDataURL()) into a
+  // Blob — no fetch(), no callback. Lets a canvas export stay entirely
+  // synchronous (toDataURL is sync, unlike toBlob's async callback) while
+  // still producing a real Blob for a blob: URL download, which Safari
+  // honors the `download` attribute on far more reliably than a raw
+  // data: URL (Safari frequently just navigates to/displays those instead
+  // of downloading them, regardless of the `download` attribute).
+  function dataURLToBlob(dataUrl) {
+    const [header, base64] = dataUrl.split(",");
+    const mime = header.match(/:(.*?);/)[1];
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    return new Blob([bytes], { type: mime });
+  }
+
   return {
     clamp,
     lerp,
@@ -128,5 +144,6 @@ AGM.utils = (function () {
     debounce,
     rafThrottle,
     downloadBlob,
+    dataURLToBlob,
   };
 })();
