@@ -187,8 +187,8 @@ button, input {
 .btn:hover { background: rgba(14, 3, 12, 0.05); }
 
 .btn__icon {
-  width: 16px;
-  height: 16px;
+  width: 17px;
+  height: 17px;
   flex: none;
 }
 .btn:active { transform: scale(0.98); }
@@ -263,34 +263,9 @@ button, input {
      oval silhouette instead of the rectangular DOM box. */
   display: block;
   touch-action: none;
-  cursor: crosshair;
+  cursor: none;
   filter: drop-shadow(0 24px 50px rgba(0, 0, 0, 0.14));
 }
-
-/* ---------------------------------- Brush toolbar ---------------------------------- */
-
-.brush-toolbar {
-  flex: none;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 10px 8px 14px;
-  background: var(--panel-bg);
-  backdrop-filter: var(--panel-blur);
-  -webkit-backdrop-filter: var(--panel-blur);
-  border-radius: 999px;
-}
-
-.brush-clear {
-  appearance: none;
-  background: none;
-  border: none;
-  color: var(--text-tertiary);
-  font-size: 12px;
-  cursor: pointer;
-  padding: 4px 6px;
-}
-.brush-clear:hover { color: var(--text-secondary); }
 
 /* ---------------------------------- Render controls ---------------------------------- */
 
@@ -360,6 +335,22 @@ button, input {
   border-radius: 999px;
   background: transparent;
   border: 2px solid var(--panel-border);
+}
+
+/* ---------------------------------- Custom cursor ---------------------------------- */
+
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 187px;
+  height: 60px;
+  object-fit: contain;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 999999;
+  will-change: transform;
+  transition: opacity 0.15s ease;
 }
 
 /* ---------------------------------- Scrollbars ---------------------------------- */

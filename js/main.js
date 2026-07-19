@@ -15,6 +15,7 @@
     canvasView.init();
     maskPainter.init();
     controls.init();
+    if (AGM.customCursor) AGM.customCursor.init();
     bindLeftPanel();
     loadDefaultImage();
   }
@@ -46,15 +47,12 @@
       }
     });
 
-    // Reset returns to the same auto-loaded demo image shown on first
-    // load — masking is meant to always be available to try, not an
-    // empty canvas — with sliders/mask cleared back to their defaults.
+    // Reset now just clears the painted mask (what "Clear Mask" used to
+    // do) — it no longer touches the current photo or sliders. Starting
+    // over with a different photo is done by uploading a new one.
     resetBtn.addEventListener("click", () => {
-      state.reset();
-      controls.syncFromState();
       maskPainter.clearMask();
-      canvasView.clearImage();
-      loadDefaultImage();
+      canvasView.regenerate();
     });
 
     exportBtn.addEventListener("click", () => {

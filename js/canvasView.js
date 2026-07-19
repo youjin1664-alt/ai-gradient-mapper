@@ -23,6 +23,13 @@ AGM.canvasView = (function () {
   let circlesLayer, circlesLayerCtx;
   let imageLogoBitmap = null;
 
+  // Capped at 2x — real device pixel ratios go higher (3x on some phones),
+  // but 2x already looks sharp and keeps the pixel buffers (and per-frame
+  // redraw cost) reasonable. All drawing code below still works entirely
+  // in logical FRAME_WIDTH/FRAME_HEIGHT coordinates — see the ctx.scale()
+  // calls just below, which are the only places DPR is applied.
+  const DPR = Math.min(window.devicePixelRatio || 1, 2);
+
   const scheduleRegenerate = utils.rafThrottle(() => regenerate());
 
   function init() {
@@ -31,18 +38,32 @@ AGM.canvasView = (function () {
     wrapper = document.getElementById("canvasWrapper");
     stage = document.getElementById("canvasStage");
 
-    canvas.width = CONFIG.FRAME_WIDTH;
-    canvas.height = CONFIG.FRAME_HEIGHT;
+    // The canvas's *pixel buffer* is sized up by the device pixel ratio so
+    // Retina/HiDPI screens don't have to upscale (and blur) it — but the
+    // buffer's logical drawing coordinates stay exactly FRAME_WIDTH x
+    // FRAME_HEIGHT via ctx.scale(DPR, DPR), so circleEngine's generated
+    // positions and every draw call in this file are completely unaffected.
+    canvas.width = CONFIG.FRAME_WIDTH * DPR;
+    canvas.height = CONFIG.FRAME_HEIGHT * DPR;
+    ctx.scale(DPR, DPR);
 
     // circleEngine.paintCircles() always clears its target context first —
     // fine when it owned the whole canvas, but it would wipe out the photo
     // layer painted just before it in compositeLayers(). Giving it a
     // dedicated offscreen target keeps paintCircles() itself untouched.
     circlesLayer = document.createElement("canvas");
-    circlesLayer.width = CONFIG.FRAME_WIDTH;
-    circlesLayer.height = CONFIG.FRAME_HEIGHT;
+    circlesLayer.width = CONFIG.FRAME_WIDTH * DPR;
+    circlesLayer.height = CONFIG.FRAME_HEIGHT * DPR;
     circlesLayerCtx = circlesLayer.getContext("2d");
+    circlesLayerCtx.scale(DPR, DPR);
 
+    // The SVG file's own intrinsic size (currently 3142x880) is already
+    // well above its ~240px display size in the pill caption, so no
+    // explicit rasterWidth/rasterHeight override is needed here — an <img>
+    // with no explicit width/height decodes an SVG at that intrinsic size.
+    // (If the file is ever swapped for one with a small intrinsic size
+    // again, pass rasterWidth/rasterHeight to loadBitmap() to force a
+    // sharper decode — see its doc comment below.)
     loadBitmap("images/image logo.svg", (bmp) => {
       imageLogoBitmap = bmp;
       repaint();
@@ -202,26 +223,37 @@ AGM.canvasView = (function () {
 
   // Loads an image (raster or SVG) and hands back the decoded <img> once
   // ready — cached once by the caller, reused every repaint/export via
-  // drawImage without re-fetching or re-decoding.
-  function loadBitmap(src, onReady) {
+  // drawImage without re-fetching or re-decoding. For SVGs in particular,
+  // pass rasterWidth/rasterHeight (set on the <img> before .src so the
+  // browser decodes at that resolution) — without it, an SVG with no
+  // explicit size is rasterized once at its own tiny intrinsic size, and
+  // every later drawImage() just stretches that low-res bitmap.
+  function loadBitmap(src, onReady, rasterWidth, rasterHeight) {
     const img = new Image();
+    if (rasterWidth && rasterHeight) {
+      img.width = rasterWidth;
+      img.height = rasterHeight;
+    }
     img.onload = () => onReady(img);
     img.src = src;
   }
 
   // The pill always CSS-scales to fit its container — there is no manual
-  // zoom mode. Internal pixel resolution stays fixed at FRAME_WIDTH/HEIGHT.
+  // zoom mode. CSS display size is computed from the *logical*
+  // FRAME_WIDTH/HEIGHT, not the DPR-multiplied pixel buffer (canvas.width/
+  // height) — otherwise the pill would render DPR times too large on
+  // screen while still only holding FRAME_WIDTH x FRAME_HEIGHT of content.
   function applyFitScale() {
     const padding = 0;
     const availW = Math.max(50, wrapper.clientWidth - padding);
     const availH = Math.max(50, wrapper.clientHeight - padding);
     const scale = utils.clamp(
-      Math.min(availW / canvas.width, availH / canvas.height),
+      Math.min(availW / CONFIG.FRAME_WIDTH, availH / CONFIG.FRAME_HEIGHT),
       CONFIG.MIN_ZOOM,
       CONFIG.MAX_ZOOM
     );
-    canvas.style.width = `${Math.round(canvas.width * scale)}px`;
-    canvas.style.height = `${Math.round(canvas.height * scale)}px`;
+    canvas.style.width = `${Math.round(CONFIG.FRAME_WIDTH * scale)}px`;
+    canvas.style.height = `${Math.round(CONFIG.FRAME_HEIGHT * scale)}px`;
   }
 
   function getCanvas() {

@@ -16,8 +16,6 @@ AGM.maskPainter = (function () {
   let lastX = 0;
   let lastY = 0;
 
-  let clearBtn;
-
   function init() {
     maskCanvas = document.createElement("canvas");
     maskCanvas.width = CONFIG.FRAME_WIDTH;
@@ -30,19 +28,18 @@ AGM.maskPainter = (function () {
     artCanvas.addEventListener("pointermove", onPointerMove);
     window.addEventListener("pointerup", onPointerUp);
     window.addEventListener("pointercancel", onPointerUp);
-
-    clearBtn = document.getElementById("clearMaskBtn");
-    clearBtn.addEventListener("click", () => {
-      clearMask();
-      canvasView.regenerate();
-    });
   }
 
   function toCanvasPoint(e) {
     const artCanvas = canvasView.getCanvas();
     const rect = artCanvas.getBoundingClientRect();
-    const scaleX = artCanvas.width / rect.width;
-    const scaleY = artCanvas.height / rect.height;
+    // Scale against the *logical* FRAME_WIDTH/HEIGHT, not artCanvas.width/
+    // height — canvasView now sizes that pixel buffer up by the device
+    // pixel ratio for sharper rendering, but maskCanvas (like every other
+    // draw call in this app) is still addressed in logical 0..FRAME_WIDTH
+    // coordinates.
+    const scaleX = CONFIG.FRAME_WIDTH / rect.width;
+    const scaleY = CONFIG.FRAME_HEIGHT / rect.height;
     return {
       x: (e.clientX - rect.left) * scaleX,
       y: (e.clientY - rect.top) * scaleY,
