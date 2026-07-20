@@ -1,9 +1,12 @@
 /* ==========================================================================
    mobileOnboarding.js — full-screen "portrait/landscape only" notice shown
    on every mobile page load (portrait phones by width, or phones rotated
-   to landscape), dismissed by tapping the screen. Purely additive: only
-   touches the standalone #mobileOnboarding overlay, gated by matchMedia,
-   so it never runs on desktop/tablet.
+   to landscape). Dismissed by tapping the screen, or automatically the
+   moment the device is physically rotated into landscape while it's still
+   showing — if the page happens to *load* already in landscape, it stays
+   up until tapped (rotating away isn't possible from there). Purely
+   additive: only touches the standalone #mobileOnboarding overlay, gated
+   by matchMedia, so it never runs on desktop/tablet.
    ========================================================================== */
 
 window.AGM = window.AGM || {};
@@ -22,9 +25,17 @@ AGM.mobileOnboarding = (function () {
 
     overlay.classList.add("is-visible");
     overlay.addEventListener("click", dismiss, { once: true });
+    window.addEventListener("resize", onViewportChange);
+    window.addEventListener("orientationchange", onViewportChange);
+
+    function onViewportChange() {
+      if (window.innerWidth > window.innerHeight) dismiss();
+    }
 
     function dismiss() {
       overlay.classList.remove("is-visible");
+      window.removeEventListener("resize", onViewportChange);
+      window.removeEventListener("orientationchange", onViewportChange);
     }
   }
 
