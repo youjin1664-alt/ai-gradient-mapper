@@ -39,6 +39,7 @@ AGM.CONFIG = {
     { key: "randomPosition", label: "Random Position", min: 0, max: 100, step: 1, unit: "" },
     { key: "edgeSoftness", label: "Edge Softness", min: 0, max: 100, step: 1, unit: "" },
     { key: "colorMix", label: "Color Mix", min: 0, max: 100, step: 1, unit: "" },
+    { key: "opacity", label: "Opacity", min: 0, max: 100, step: 1, unit: "" },
   ],
 
   // Settings that require regenerating circle positions/radii (expensive).
@@ -69,7 +70,7 @@ AGM.DEFAULT_SETTINGS = {
   circleSize: 18, // px, 1-80
   density: 74, // 1-100
   overlap: 50, // 0-100
-  opacity: 100, // fixed, not user-editable — kept only so paintCircles()'s signature is untouched
+  opacity: 100, // 0-100 — multiplies each circle's rendered alpha
   randomSize: 30, // 0-100
   randomPosition: 20, // 0-100
   edgeSoftness: 15, // 0-100

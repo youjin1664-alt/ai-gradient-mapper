@@ -99,14 +99,17 @@ AGM.circleAnimator = (function () {
   /** Draws the current animated frame. Mirrors circleEngine.paintCircle's
    *  existing hard/soft-edge logic (kept as a separate, small copy here so
    *  circleEngine.js itself is never touched), using each circle's own
-   *  animated alpha/scale instead of one shared opacity value. */
-  function drawFrame(ctx, width, height, edgeSoftness) {
+   *  animated alpha/scale instead of one shared opacity value. `opacity`
+   *  (0-100, from the Opacity slider) is applied as a multiplier on top of
+   *  that per-circle twinkle alpha. */
+  function drawFrame(ctx, width, height, edgeSoftness, opacity) {
     ctx.clearRect(0, 0, width, height);
     const circles = AGM.state.circles;
     if (!circles || circles.length === 0) return;
 
     const now = performance.now();
     const softness = AGM.utils.clamp(edgeSoftness, 0, 100);
+    const opacityMul = AGM.utils.clamp(opacity, 0, 100) / 100;
 
     for (let i = 0; i < circles.length; i++) {
       const s = animStates[i];
@@ -115,7 +118,7 @@ AGM.circleAnimator = (function () {
 
       const circle = circles[i];
       const radius = Math.max(0.2, circle.radius * s.scale);
-      const alpha = AGM.utils.clamp(s.alpha, 0, 1);
+      const alpha = AGM.utils.clamp(s.alpha * opacityMul, 0, 1);
 
       if (softness <= 2) {
         ctx.beginPath();
