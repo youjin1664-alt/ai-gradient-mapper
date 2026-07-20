@@ -352,6 +352,36 @@ button, input {
   transition: opacity 0.15s ease;
 }
 
+/* ---------------------------------- Mobile onboarding ---------------------------------- */
+
+.mobile-onboarding {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000000;
+  opacity: 0;
+  pointer-events: none;
+  background: #000;
+  transition: opacity 0.2s ease;
+}
+
+.mobile-onboarding.is-visible {
+  display: block;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mobile-onboarding img {
+  width: 100%;
+  height: 100%;
+  /* Source graphic is landscape (~2.16:1); `cover` on a portrait phone
+     viewport crops most of its width and cuts off the warning text, so
+     `contain` + a matching solid background (image corners sample near
+     black) keeps the full message readable with near-seamless letterboxing. */
+  object-fit: contain;
+  display: block;
+}
+
 /* ---------------------------------- Scrollbars ---------------------------------- */
 
 ::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -367,4 +397,95 @@ button, input {
     --page-margin: 20px;
   }
   .app-shell { gap: 18px; }
+}
+
+/* ---------------------------------- Mobile (<=768px) ---------------------------------- */
+/* Best-effort layout from two reference screenshots — real Figma Dev Mode
+   spacing/padding values weren't accessible (auth-gated link), so these are
+   approximations, not exact pixel parity. Everything above 768px (including
+   the 1080px tablet tweak above) is completely untouched — this block only
+   repositions the existing desktop DOM via CSS; no HTML/JS changed. */
+@media (max-width: 768px) {
+  :root {
+    --page-margin: 14px;
+    --header-h: 48px;
+    --footer-h: 34px;
+    --radius-lg: 20px;
+  }
+
+  .app-header__logo { height: 15px; }
+  .app-footer__mark { height: 7px; }
+
+  .app-shell {
+    position: relative;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 0;
+    padding: 0 var(--page-margin) var(--page-margin);
+  }
+
+  .pill-stage-wrapper {
+    width: 100%;
+    gap: 0;
+  }
+
+  .canvas-wrapper {
+    flex-basis: 100%;
+  }
+
+  /* Both cards float over the pill (matching the reference screenshot)
+     instead of sitting beside it like on desktop. */
+  .glass-panel--left {
+    position: absolute;
+    left: var(--page-margin);
+    bottom: 24%;
+    top: auto;
+    width: 132px;
+    padding: 14px 10px;
+    gap: 8px;
+    margin-top: 0;
+    align-self: auto;
+    z-index: 5;
+  }
+
+  .glass-panel--right {
+    position: absolute;
+    right: var(--page-margin);
+    top: 50%;
+    transform: translateY(-50%);
+    width: 148px;
+    padding: 14px 12px;
+    gap: 12px;
+    max-height: 74vh;
+    z-index: 5;
+  }
+
+  .panel-title { font-size: 10px; }
+  .field-label { font-size: 11px; }
+  .file-meta { font-size: 10px; }
+
+  .btn {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+  .btn__icon { width: 13px; height: 13px; }
+
+  .btn--reset {
+    padding: 4px 10px;
+    font-size: 11px;
+  }
+
+  .controls-grid { gap: 12px; }
+  .control__label-row { font-size: 10px; }
+
+  .control input[type="range"]::-webkit-slider-thumb {
+    width: 12px;
+    height: 12px;
+    margin-top: -4px;
+  }
+  .control input[type="range"]::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+  }
 }

@@ -16,6 +16,7 @@
     maskPainter.init();
     controls.init();
     if (AGM.customCursor) AGM.customCursor.init();
+    if (AGM.mobileOnboarding) AGM.mobileOnboarding.init();
     bindLeftPanel();
     loadDefaultImage();
   }
