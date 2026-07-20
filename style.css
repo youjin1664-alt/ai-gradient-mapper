@@ -385,7 +385,7 @@ button, input {
 
 .mobile-onboarding__backdrop img {
   width: 100%;
-  max-width: 420px;
+  max-width: 210px;
   height: auto;
   display: block;
 }
