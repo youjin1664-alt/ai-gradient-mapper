@@ -361,7 +361,7 @@ button, input {
   z-index: 1000000;
   opacity: 0;
   pointer-events: none;
-  background: #000;
+  background: rgba(0, 0, 0, 0.8);
   transition: opacity 0.2s ease;
 }
 
