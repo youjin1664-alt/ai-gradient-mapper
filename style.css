@@ -412,14 +412,15 @@ button, input {
    viewport (the desktop design reference). On shorter, wider viewports —
    e.g. a tablet or phone held in landscape — that fixed offset pushes the
    card past the bottom edge, where body's overflow:hidden silently clips
-   it. Center it like the right panel instead, only when the viewport is
-   too short for the fixed offset to fit safely; true desktop (>=900px
-   tall) and the <=768px mobile layout (handled separately below) are
-   unaffected. */
+   it. Anchor it to the bottom instead (matching the reference composition,
+   where the card sits low, near the pill's lower edge) only when the
+   viewport is too short for the fixed offset to fit safely; true desktop
+   (>=900px tall) and the <=768px mobile layout (handled separately below)
+   are unaffected. */
 @media (min-width: 769px) and (max-height: 899px) {
   .glass-panel--left {
     margin-top: 0;
-    align-self: center;
+    align-self: flex-end;
   }
 }
 
