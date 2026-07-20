@@ -370,25 +370,23 @@ button, input {
   pointer-events: auto;
 }
 
-/* Sized/positioned in JS (mobileOnboarding.js) to exactly match the live
-   #artCanvas pill rect, so the dimmed backdrop always matches the pill's
-   actual on-screen shape in both portrait and landscape orientation
-   instead of a hardcoded/static shape. */
+/* Full-screen dim — the icon/heading/subtext is the only part that reads
+   differently between portrait and landscape (it just recenters), the
+   backdrop itself always fills the whole viewport. */
 .mobile-onboarding__backdrop {
   position: fixed;
+  inset: 0;
   background: rgba(0, 0, 0, 0.8);
-  border-radius: var(--radius-pill);
-  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8%;
+  padding: 10%;
 }
 
 .mobile-onboarding__backdrop img {
   width: 100%;
-  height: 100%;
-  object-fit: contain;
+  max-width: 420px;
+  height: auto;
   display: block;
 }
 
