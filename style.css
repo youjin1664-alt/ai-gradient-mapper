@@ -407,14 +407,15 @@ button, input {
   .app-shell { gap: 18px; }
 }
 
-/* ---------------------------------- Large-desktop scale-up (>1440px) ---------------------------------- */
-/* Above the 1440px design baseline the side cards otherwise stay pinned at
+/* ---------------------------------- Large-desktop scale-up (>1920px) ---------------------------------- */
+/* Above 1920px (regular full-HD monitors stay at the 1440px design size;
+   only bigger displays get this) the side cards otherwise stay pinned at
    their original size with a lot of empty space around them. Scale them up
    1.2x and tighten the gap; .pill-stage-wrapper's max-width (set in JS by
    canvasView.js's applyFitScale, matching its existing fit-scale math) is
    what actually pulls the cards flush against the pill regardless of
    window size, without risking overflow at in-between widths. */
-@media (min-width: 1441px) {
+@media (min-width: 1921px) {
   :root {
     --left-w: 247px;
     --right-w: 252px;

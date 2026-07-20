@@ -24,7 +24,7 @@ AGM.canvasView = (function () {
   let imageLogoBitmap = null;
 
   // Must match style.css's "Large-desktop scale-up" media query breakpoint.
-  const LARGE_DESKTOP_MIN_WIDTH = 1441;
+  const LARGE_DESKTOP_MIN_WIDTH = 1921;
 
   // Capped at 2x — real device pixel ratios go higher (3x on some phones),
   // but 2x already looks sharp and keeps the pixel buffers (and per-frame
