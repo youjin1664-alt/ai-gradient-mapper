@@ -19,7 +19,10 @@ AGM.canvasView = (function () {
 
   const RIM_WIDTH = 3;
 
-  let canvas, ctx, wrapper, stage;
+  let canvas, ctx, wrapper, stage, pillStage;
+
+  // Must match style.css's "Large-desktop scale-up" media query breakpoint.
+  const LARGE_DESKTOP_MIN_WIDTH = 1441;
   let circlesLayer, circlesLayerCtx;
   let imageLogoBitmap = null;
 
@@ -37,6 +40,7 @@ AGM.canvasView = (function () {
     ctx = canvas.getContext("2d");
     wrapper = document.getElementById("canvasWrapper");
     stage = document.getElementById("canvasStage");
+    pillStage = document.querySelector(".pill-stage-wrapper");
 
     // The canvas's *pixel buffer* is sized up by the device pixel ratio so
     // Retina/HiDPI screens don't have to upscale (and blur) it — but the
@@ -244,6 +248,11 @@ AGM.canvasView = (function () {
   // height) — otherwise the pill would render DPR times too large on
   // screen while still only holding FRAME_WIDTH x FRAME_HEIGHT of content.
   function applyFitScale() {
+    // Reset any previous hug (see below) before measuring, so a shrunk
+    // wrapper from an earlier call never feeds back in as the "available"
+    // space — otherwise the pill would ratchet smaller on every resize.
+    if (pillStage) pillStage.style.maxWidth = "";
+
     const padding = 0;
     const availW = Math.max(50, wrapper.clientWidth - padding);
     const availH = Math.max(50, wrapper.clientHeight - padding);
@@ -252,8 +261,21 @@ AGM.canvasView = (function () {
       CONFIG.MIN_ZOOM,
       CONFIG.MAX_ZOOM
     );
-    canvas.style.width = `${Math.round(CONFIG.FRAME_WIDTH * scale)}px`;
+    const renderedW = Math.round(CONFIG.FRAME_WIDTH * scale);
+    canvas.style.width = `${renderedW}px`;
     canvas.style.height = `${Math.round(CONFIG.FRAME_HEIGHT * scale)}px`;
+
+    // On large desktop windows .pill-stage-wrapper flex-grows to fill all
+    // leftover row space, and the pill (fixed FRAME_WIDTH:FRAME_HEIGHT
+    // ratio) letterboxes inside it, leaving the side cards looking far
+    // away. Capping the wrapper's own width to what the pill actually
+    // renders at pulls the cards flush against it. renderedW is always
+    // <= availW by construction (scale is a min(...) of the two ratios),
+    // so this can never exceed the space that was already safely
+    // available — no overflow risk at any window size.
+    if (pillStage) {
+      pillStage.style.maxWidth = window.innerWidth >= LARGE_DESKTOP_MIN_WIDTH ? `${renderedW}px` : "";
+    }
   }
 
   function getCanvas() {
