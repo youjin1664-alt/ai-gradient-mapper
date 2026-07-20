@@ -150,7 +150,7 @@ AGM.canvasView = (function () {
       // drawn above survives untouched. circleAnimator owns the live
       // per-circle color/twinkle animation; circleEngine itself (circle
       // packing, masking) is untouched.
-      AGM.circleAnimator.drawFrame(circlesLayerCtx, width, height, state.settings.edgeSoftness, state.settings.opacity);
+      AGM.circleAnimator.drawFrame(circlesLayerCtx, width, height, state.settings.edgeSoftness);
       targetCtx.drawImage(circlesLayer, 0, 0, width, height);
     }
 
