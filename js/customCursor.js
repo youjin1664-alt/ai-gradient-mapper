@@ -18,7 +18,7 @@ AGM.customCursor = (function () {
   const REFERENCE_VIEWPORT = 1440;
   const MIN_SCALE = 1;
   const MAX_SCALE = 1.77;
-  const GLOBAL_SCALE = 4;
+  const GLOBAL_SCALE = 2;
 
   // Frame-rate-independent exponential smoothing, tuned to the requested
   // ~0.08-0.12s "catch up" feel regardless of the actual frame rate.
