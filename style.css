@@ -436,20 +436,20 @@ button, input {
   /* Reference design has no footer/copyright on this screen. */
   .app-footer { display: none; }
 
-  /* Exact Figma Dev Mode measurements (relative to app-shell's content top,
-     i.e. right after the mobile header): Reset button top=144, circle
-     top=204 (34px below Reset's bottom, 144+26+34), circle bottom=511
-     (204+307 diameter), controls card top=531 (511+20px gap). Padding-top
-     is 0 here so .pill-stage-wrapper's margin-top below can express 204
-     directly without double-counting; gap:20px is the exact circle<->card
-     spacing (flexbox gap applies between the two visible children only,
-     since the left/right panels are display:none). */
+  /* The circle<->Reset (34px) and circle<->controls-card (20px) gaps are
+     exact Figma Dev Mode measurements and stay fixed. But the *overall*
+     group's distance from the header was ALSO a fixed Figma pixel value
+     (204px) — that assumed one specific reference frame height and looked
+     "pushed down" on real devices with a shorter viewport (e.g. Galaxy
+     phones vs. whatever the Figma frame's own height was). Centering the
+     group vertically in the remaining space via justify-content instead
+     adapts to whatever height is actually available. */
   .app-shell {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     gap: 20px;
     padding: 0 var(--page-margin) 24px;
   }
@@ -461,14 +461,12 @@ button, input {
 
   /* Fixed 307x307 "stage" — holds the circularly-clipped canvas card plus
      the floating Reset button (appended here, not inside #canvasWrapper,
-     by js/mobileLayout.js) so Reset never gets cut off by the clip below.
-     margin-top:204px positions its top edge at the exact Figma Y=204. */
+     by js/mobileLayout.js) so Reset never gets cut off by the clip below. */
   .pill-stage-wrapper {
     position: relative;
     flex: none;
     width: 307px;
     height: 307px;
-    margin-top: 204px;
     gap: 0;
   }
 
