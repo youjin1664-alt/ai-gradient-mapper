@@ -451,20 +451,31 @@ button, input {
     display: none;
   }
 
+  /* Fixed 307x307 "stage" — holds the circularly-clipped canvas card plus
+     the floating Reset button (appended here, not inside #canvasWrapper,
+     by js/mobileLayout.js) so Reset never gets cut off by the clip below. */
   .pill-stage-wrapper {
-    width: 100%;
+    position: relative;
+    flex: none;
+    width: 307px;
+    height: 307px;
     gap: 0;
   }
 
-  /* The pill's fixed 1200:780 ratio can't hit the spec'd 350x201 exactly
-     (201 tall implies ~309 wide; 350 wide implies ~227 tall) — prioritizing
-     width (the more visually dominant figure) and letting height follow.
-     applyFitScale() (unmodified) reads this box and fits the existing pill
-     canvas into it, so no JS/canvasView change is needed. */
+  /* True circle per the Figma spec, without touching pillPath()/circleEngine
+     (still an unmodified stadium internally). #canvasWrapper is a 472x472
+     square — applyFitScale() (unmodified) reads its clientWidth/Height and,
+     since 1200:780 is wider than tall, naturally comes out width-bound:
+     scale = 472/1200 ≈ 0.393 -> canvas renders at ~472x307. A 153.5px-radius
+     clip-path centered in that 472x472 box exactly matches the canvas's own
+     307px rendered height (472/2 - 153.5 = 82.5 = (472-307)/2, the canvas's
+     vertical centering gap), so the circle has zero empty margin top/bottom
+     and the canvas's full 472px width comfortably covers it side to side. */
   #canvasWrapper {
     flex: none;
-    width: 100%;
-    height: 227px;
+    width: 472px;
+    height: 472px;
+    clip-path: circle(153.5px at center);
   }
 
   /* Floats the (relocated, see js/mobileLayout.js) reset button over the

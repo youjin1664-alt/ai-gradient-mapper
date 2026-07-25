@@ -26,10 +26,13 @@ AGM.mobileLayout = (function () {
 
   // Relocates (does not clone) the existing desktop reset button onto the
   // photo card — appendChild on an already-attached node moves it and keeps
-  // its existing click listener from main.js intact.
+  // its existing click listener from main.js intact. Appended to
+  // .pill-stage-wrapper (not #canvasStage, which is nested inside the
+  // circularly clip-path'd #canvasWrapper) so the button floating above the
+  // circle never gets clipped along with it.
   function moveResetButton() {
     const resetBtn = document.getElementById("resetBtn");
-    const stage = document.getElementById("canvasStage");
+    const stage = document.querySelector(".pill-stage-wrapper");
     if (resetBtn && stage) stage.appendChild(resetBtn);
   }
 

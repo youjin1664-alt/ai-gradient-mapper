@@ -19,6 +19,10 @@ AGM.canvasView = (function () {
 
   const RIM_WIDTH = 3;
 
+  // Must mirror style.css's mobile media query. The watermark caption is
+  // skipped on mobile (see drawFrameChrome) per the mobile design spec.
+  const MOBILE_QUERY = "(max-width: 768px), (max-height: 500px) and (orientation: landscape)";
+
   let canvas, ctx, wrapper, stage;
   let circlesLayer, circlesLayerCtx;
   let imageLogoBitmap = null;
@@ -181,8 +185,9 @@ AGM.canvasView = (function () {
     // Stamped on any working photo — including the auto-loaded default
     // demo image (main.js loads it through the exact same pipeline as a
     // real upload), so behavior is identical before and after the user
-    // swaps in their own photo.
-    if (state.hasImage) drawCaption(targetCtx, width, height);
+    // swaps in their own photo. Skipped on mobile per the mobile design
+    // spec (no watermark on the circular card).
+    if (state.hasImage && !window.matchMedia(MOBILE_QUERY).matches) drawCaption(targetCtx, width, height);
   }
 
   function drawCaption(targetCtx, width, height) {
