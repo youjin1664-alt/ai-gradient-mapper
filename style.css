@@ -495,7 +495,7 @@ button, input {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 34px;
+    gap: 20px;
   }
 
   /* Fixed 307x307 circular "window": flex-centers the 472x472
