@@ -390,6 +390,12 @@ button, input {
   display: block;
 }
 
+/* ---------------------------------- Mobile-only elements ---------------------------------- */
+/* Hidden by default; shown only inside the mobile media query below. New
+   selectors only — nothing existing touched. */
+.mobile-header { display: none; }
+.mobile-controls-card { display: none; }
+
 /* ---------------------------------- Scrollbars ---------------------------------- */
 
 ::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -439,21 +445,48 @@ button, input {
 @media (max-width: 768px), (max-height: 500px) and (orientation: landscape) {
   :root {
     --page-margin: 14px;
-    --header-h: 48px;
-    --footer-h: 34px;
     --radius-lg: 20px;
   }
 
-  .app-header__logo { height: 15px; }
-  .app-footer__mark { height: 7px; }
+  body {
+    background-image: url("images/mobile_bag.jpg");
+    /* Longhand override only — overflow-x stays hidden from the base
+       shorthand. Short/landscape viewports (e.g. a phone rotated sideways)
+       aren't tall enough to fit header+card+controls, so this lets the
+       page scroll to reach the bottom controls card instead of clipping
+       it, unlike the base desktop layout which never needs to scroll. */
+    overflow-y: auto;
+  }
+
+  .app-header { display: none; }
+
+  .mobile-header {
+    display: block;
+    width: 100%;
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  .mobile-header img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* Reference design has no footer/copyright on this screen. */
+  .app-footer { display: none; }
 
   .app-shell {
     position: relative;
+    display: flex;
     flex-direction: column;
-    align-items: stretch;
+    align-items: center;
     justify-content: flex-start;
-    gap: 0;
-    padding: 0 var(--page-margin) var(--page-margin);
+    gap: 24px;
+    padding: 24px var(--page-margin);
+  }
+
+  .glass-panel--left,
+  .glass-panel--right {
+    display: none;
   }
 
   .pill-stage-wrapper {
@@ -461,54 +494,64 @@ button, input {
     gap: 0;
   }
 
-  .canvas-wrapper {
-    flex-basis: 100%;
+  /* The pill's fixed 1200:780 ratio can't hit the spec'd 350x201 exactly
+     (201 tall implies ~309 wide; 350 wide implies ~227 tall) — prioritizing
+     width (the more visually dominant figure) and letting height follow.
+     applyFitScale() (unmodified) reads this box and fits the existing pill
+     canvas into it, so no JS/canvasView change is needed. */
+  #canvasWrapper {
+    flex: none;
+    width: 100%;
+    height: 227px;
   }
 
-  /* Both cards float over the pill (matching the reference screenshot)
-     instead of sitting beside it like on desktop. */
-  .glass-panel--left {
-    position: absolute;
-    left: var(--page-margin);
-    bottom: 24%;
-    top: auto;
-    width: 132px;
-    padding: 14px 10px;
-    gap: 8px;
-    margin-top: 0;
-    align-self: auto;
-    z-index: 5;
-  }
-
-  .glass-panel--right {
-    position: absolute;
-    right: var(--page-margin);
-    top: 50%;
-    transform: translateY(-50%);
-    width: 148px;
-    padding: 14px 12px;
-    gap: 12px;
-    max-height: 74vh;
-    z-index: 5;
-  }
-
-  .panel-title { font-size: 10px; }
-  .field-label { font-size: 11px; }
-  .file-meta { font-size: 10px; }
-
-  .btn {
-    padding: 4px 8px;
-    font-size: 11px;
-  }
-  .btn__icon { width: 13px; height: 13px; }
-
+  /* Floats the (relocated, see js/mobileLayout.js) reset button over the
+     top edge of the photo card, matching the reference screenshot. */
   .btn--reset {
-    padding: 4px 10px;
-    font-size: 11px;
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 26px;
+    padding: 0;
+    font-size: 14px;
+    letter-spacing: -0.046em;
+    z-index: 10;
   }
 
-  .controls-grid { gap: 12px; }
-  .control__label-row { font-size: 10px; }
+  .custom-cursor {
+    width: 58px;
+    height: 33.31px;
+  }
+
+  .mobile-controls-card {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
+    max-width: 360px;
+    padding: 20px 18px;
+  }
+
+  /* DOM order (circleSize, density, overlap, random) alone produces the
+     row1/row2 layout the reference shows via normal grid auto-placement. */
+  .mobile-controls-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 16px;
+    row-gap: 16px;
+  }
+
+  .mobile-next-btn {
+    width: 288px;
+    max-width: 100%;
+    height: 45px;
+    margin: 0 auto;
+    border-width: 1.74px;
+    font-size: 18px;
+    letter-spacing: -0.046em;
+  }
 
   .control input[type="range"]::-webkit-slider-thumb {
     width: 12px;

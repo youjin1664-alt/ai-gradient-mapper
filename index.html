@@ -13,6 +13,9 @@
     <img class="app-header__logo" src="images/Logo.svg" alt="every else" />
   </header>
 
+  <!-- ============ MOBILE HEADER (<=768px only) ============ -->
+  <img id="mobileHeaderImg" class="mobile-header" src="images/mo_header.jpg" alt="every else" />
+
   <div class="app-shell">
 
     <!-- ============ LEFT GLASS PANEL ============ -->
@@ -55,6 +58,9 @@
       </section>
     </aside>
 
+    <!-- ============ MOBILE CONTROLS CARD (<=768px only, populated by js/mobileLayout.js) ============ -->
+    <div id="mobileControlsCard" class="glass-panel mobile-controls-card"></div>
+
   </div>
 
   <!-- ============ FOOTER ============ -->
@@ -84,6 +90,7 @@
   <script src="js/exporter.js"></script>
   <script src="js/customCursor.js"></script>
   <script src="js/mobileOnboarding.js"></script>
+  <script src="js/mobileLayout.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

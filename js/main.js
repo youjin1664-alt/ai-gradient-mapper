@@ -17,6 +17,7 @@
     controls.init();
     if (AGM.customCursor) AGM.customCursor.init();
     if (AGM.mobileOnboarding) AGM.mobileOnboarding.init();
+    if (AGM.mobileLayout) AGM.mobileLayout.init();
     bindLeftPanel();
     loadDefaultImage();
   }

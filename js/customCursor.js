@@ -20,6 +20,12 @@ AGM.customCursor = (function () {
   const MAX_SCALE = 1.77;
   const GLOBAL_SCALE = 0.7;
 
+  // Must mirror style.css's mobile media query. On mobile the cursor's base
+  // size is already set to the spec'd 58x33.31px via CSS, so the desktop
+  // viewport-width-based scale multiplier (tuned for 1440-2560px monitors)
+  // is bypassed there — see applyScale().
+  const MOBILE_QUERY = "(max-width: 768px), (max-height: 500px) and (orientation: landscape)";
+
   // Frame-rate-independent exponential smoothing, tuned to the requested
   // ~0.08-0.12s "catch up" feel regardless of the actual frame rate.
   const SMOOTHING_SECONDS = 0.1;
@@ -48,7 +54,34 @@ AGM.customCursor = (function () {
     target.addEventListener("mousemove", onMouseMove);
     target.addEventListener("mouseleave", onLeaveTarget);
 
+    // On mobile there's no real hover — the "Drag" cursor should only show
+    // during an active touch-drag on the canvas instead. Entirely additive:
+    // never runs when the query doesn't match, so desktop's hover-based
+    // behavior above is unaffected.
+    if (window.matchMedia(MOBILE_QUERY).matches) {
+      target.addEventListener("pointerdown", onMobilePointerDown);
+      target.addEventListener("pointermove", onMobilePointerMove);
+      window.addEventListener("pointerup", onMobilePointerUp);
+      window.addEventListener("pointercancel", onMobilePointerUp);
+    }
+
     requestAnimationFrame(loop);
+  }
+
+  function onMobilePointerDown(e) {
+    targetX = currentX = e.clientX;
+    targetY = currentY = e.clientY;
+    setVisible(true);
+  }
+
+  function onMobilePointerMove(e) {
+    if (!visible) return;
+    targetX = e.clientX;
+    targetY = e.clientY;
+  }
+
+  function onMobilePointerUp() {
+    setVisible(false);
   }
 
   function onEnterTarget(e) {
@@ -72,6 +105,10 @@ AGM.customCursor = (function () {
   }
 
   function applyScale() {
+    if (window.matchMedia(MOBILE_QUERY).matches) {
+      currentScale = 1;
+      return;
+    }
     currentScale = utils.clamp(window.innerWidth / REFERENCE_VIEWPORT, MIN_SCALE, MAX_SCALE) * GLOBAL_SCALE;
   }
 
