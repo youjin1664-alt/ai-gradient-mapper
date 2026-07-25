@@ -534,9 +534,12 @@ button, input {
   /* Relocated (see js/mobileLayout.js) reset button — now a normal flex
      item in .pill-stage-wrapper's column, centered by align-items:center
      and spaced from the circle by that column's 34px gap. No absolute
-     positioning needed. */
+     positioning needed. align-self:center overrides the desktop rule's
+     align-self:flex-end (meant for the right panel), which otherwise leaks
+     through here and pushes the button to the right instead of centering it. */
   .btn--reset {
     flex: none;
+    align-self: center;
     width: 60px;
     height: 26px;
     margin-top: 0;
