@@ -484,10 +484,9 @@ button, input {
   }
 
   /* Outer flex column for the mobile "stage": the Reset button followed by
-     the circular canvas frame, spaced by the Figma-measured 34px gap. Pure
-     document flow — no position:absolute, no manual offsets — so DOM order
-     (Reset first, see js/mobileLayout.js's prepend) is what puts Reset on
-     top. */
+     the circular canvas frame, spaced by a 21px gap. Pure document flow —
+     no position:absolute, no manual offsets — so DOM order (Reset first,
+     see js/mobileLayout.js's prepend) is what puts Reset on top. */
   .pill-stage-wrapper {
     flex: none;
     width: auto;
@@ -495,7 +494,7 @@ button, input {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 21px;
   }
 
   /* Fixed 307x307 circular "window": flex-centers the 472x472
@@ -533,15 +532,15 @@ button, input {
 
   /* Relocated (see js/mobileLayout.js) reset button — now a normal flex
      item in .pill-stage-wrapper's column, centered by align-items:center
-     and spaced from the circle by that column's 34px gap. No absolute
+     and spaced from the circle by that column's 21px gap. No absolute
      positioning needed. align-self:center overrides the desktop rule's
      align-self:flex-end (meant for the right panel), which otherwise leaks
      through here and pushes the button to the right instead of centering it. */
   .btn--reset {
     flex: none;
     align-self: center;
-    width: 60px;
-    height: 26px;
+    width: 73px;
+    height: 33px;
     margin-top: 0;
     padding: 0;
     font-size: 14px;
