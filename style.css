@@ -34,7 +34,13 @@
 * { box-sizing: border-box; }
 
 html, body {
+  /* 100dvh tracks the *actual* visible viewport as mobile browser chrome
+     (address bar / bottom nav) shows or hides, unlike 100vh which locks to
+     the largest possible viewport and leaves dead space (or clips content)
+     once the chrome collapses. The 100% line is a fallback for browsers
+     without dvh support — declared first so dvh overrides it where available. */
   height: 100%;
+  height: 100dvh;
   margin: 0;
   padding: 0;
 }
@@ -248,6 +254,15 @@ button, input {
   justify-content: center;
 }
 
+/* No-op everywhere except the mobile media query, which turns this into a
+   real box: a fixed-size circular "window" that flex-centers #canvasWrapper
+   inside it. display:contents removes it from the box tree entirely here,
+   so desktop/tablet layout is untouched (#canvasWrapper behaves as if it
+   were still a direct child of .pill-stage-wrapper). */
+.canvas-frame {
+  display: contents;
+}
+
 .canvas-stage {
   position: relative;
   flex: none;
@@ -437,13 +452,18 @@ button, input {
   .app-footer { display: none; }
 
   /* The circle<->Reset (34px) and circle<->controls-card (20px) gaps are
-     exact Figma Dev Mode measurements and stay fixed. But the *overall*
-     group's distance from the header was ALSO a fixed Figma pixel value
-     (204px) — that assumed one specific reference frame height and looked
-     "pushed down" on real devices with a shorter viewport (e.g. Galaxy
-     phones vs. whatever the Figma frame's own height was). Centering the
-     group vertically in the remaining space via justify-content instead
-     adapts to whatever height is actually available. */
+     exact Figma Dev Mode measurements and stay fixed — both now expressed
+     as real flex `gap`s (see .pill-stage-wrapper and .app-shell below)
+     instead of position:absolute + a magic top offset, so they hold
+     regardless of device/browser. The *overall* group's distance from the
+     header is NOT a fixed Figma pixel value: a fixed offset assumed one
+     specific reference frame height and looked "pushed down" on real
+     devices with a shorter viewport (e.g. Galaxy phones vs. whatever the
+     Figma frame's own height was). Centering the group vertically in the
+     remaining space via justify-content instead adapts to whatever height
+     is actually available. env(safe-area-inset-*) padding keeps that
+     available space from running under the iPhone home indicator or an
+     Android gesture/notch inset. */
   .app-shell {
     position: relative;
     display: flex;
@@ -451,7 +471,11 @@ button, input {
     align-items: center;
     justify-content: center;
     gap: 20px;
-    padding: 0 var(--page-margin) 24px;
+    padding:
+      0
+      calc(var(--page-margin) + env(safe-area-inset-right, 0px))
+      calc(24px + env(safe-area-inset-bottom, 0px))
+      calc(var(--page-margin) + env(safe-area-inset-left, 0px));
   }
 
   .glass-panel--left,
@@ -459,15 +483,33 @@ button, input {
     display: none;
   }
 
-  /* Fixed 307x307 "stage" — holds the circularly-clipped canvas card plus
-     the floating Reset button (appended here, not inside #canvasWrapper,
-     by js/mobileLayout.js) so Reset never gets cut off by the clip below. */
+  /* Outer flex column for the mobile "stage": the Reset button followed by
+     the circular canvas frame, spaced by the Figma-measured 34px gap. Pure
+     document flow — no position:absolute, no manual offsets — so DOM order
+     (Reset first, see js/mobileLayout.js's prepend) is what puts Reset on
+     top. */
   .pill-stage-wrapper {
-    position: relative;
+    flex: none;
+    width: auto;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 34px;
+  }
+
+  /* Fixed 307x307 circular "window": flex-centers the 472x472
+     #canvasWrapper inside it and clips its overflow. Only a box in the
+     mobile media query — display:contents everywhere else (see base rule
+     near .canvas-wrapper), so desktop/tablet are untouched. */
+  .canvas-frame {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex: none;
     width: 307px;
     height: 307px;
-    gap: 0;
+    overflow: hidden;
   }
 
   /* True circle per the Figma spec, without touching pillPath()/circleEngine
@@ -478,7 +520,10 @@ button, input {
      clip-path centered in that 472x472 box exactly matches the canvas's own
      307px rendered height (472/2 - 153.5 = 82.5 = (472-307)/2, the canvas's
      vertical centering gap), so the circle has zero empty margin top/bottom
-     and the canvas's full 472px width comfortably covers it side to side. */
+     and the canvas's full 472px width comfortably covers it side to side.
+     .canvas-frame (307x307, overflow:hidden) matches that same math, so it
+     clips nothing further — it only exists to give the visible circle a
+     real, flex-participating layout box. */
   #canvasWrapper {
     flex: none;
     width: 472px;
@@ -486,21 +531,18 @@ button, input {
     clip-path: circle(153.5px at center);
   }
 
-  /* Floats the (relocated, see js/mobileLayout.js) reset button above the
-     photo card. top:-60px = -(34px Figma-measured gap + 26px own height),
-     so its bottom edge sits exactly 34px above the circle's top edge. */
+  /* Relocated (see js/mobileLayout.js) reset button — now a normal flex
+     item in .pill-stage-wrapper's column, centered by align-items:center
+     and spaced from the circle by that column's 34px gap. No absolute
+     positioning needed. */
   .btn--reset {
-    position: absolute;
-    top: -60px;
-    left: 50%;
-    transform: translateX(-50%);
+    flex: none;
     width: 60px;
     height: 26px;
     margin-top: 0;
     padding: 0;
     font-size: 14px;
     letter-spacing: -0.046em;
-    z-index: 10;
   }
 
   .custom-cursor {

@@ -25,15 +25,16 @@ AGM.mobileLayout = (function () {
   }
 
   // Relocates (does not clone) the existing desktop reset button onto the
-  // photo card — appendChild on an already-attached node moves it and keeps
-  // its existing click listener from main.js intact. Appended to
-  // .pill-stage-wrapper (not #canvasStage, which is nested inside the
-  // circularly clip-path'd #canvasWrapper) so the button floating above the
-  // circle never gets clipped along with it.
+  // photo card — prepend on an already-attached node moves it and keeps its
+  // existing click listener from main.js intact. Prepended (not appended)
+  // to .pill-stage-wrapper so it's the first child in that flex column,
+  // placing it above .canvas-frame (the circular canvas card) in normal
+  // document flow — see style.css's mobile .pill-stage-wrapper rule, which
+  // lays this out via flex gap rather than absolute positioning.
   function moveResetButton() {
     const resetBtn = document.getElementById("resetBtn");
     const stage = document.querySelector(".pill-stage-wrapper");
-    if (resetBtn && stage) stage.appendChild(resetBtn);
+    if (resetBtn && stage) stage.prepend(resetBtn);
   }
 
   function buildControls() {
