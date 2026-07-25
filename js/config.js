@@ -32,7 +32,7 @@ AGM.CONFIG = {
   // Declarative slider definitions used to build the render-controls glass
   // panel and to validate/clamp values coming from state.
   CONTROL_DEFS: [
-    { key: "circleSize", label: "Circle Size", min: 1, max: 80, step: 1, unit: "px" },
+    { key: "circleSize", label: "Circle Size", min: 1, max: 80, step: 1, unit: "" },
     { key: "density", label: "Density", min: 1, max: 100, step: 1, unit: "" },
     { key: "overlap", label: "Overlap", min: 0, max: 100, step: 1, unit: "" },
     { key: "randomSize", label: "Random Size", min: 0, max: 100, step: 1, unit: "" },

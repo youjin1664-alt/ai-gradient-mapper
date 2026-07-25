@@ -570,6 +570,10 @@ button, input {
     row-gap: 16px;
   }
 
+  .mobile-controls-grid .control__label-row {
+    font-size: 14px;
+  }
+
   .mobile-next-btn {
     width: 288px;
     max-width: 100%;

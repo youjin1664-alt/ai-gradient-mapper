@@ -6,8 +6,8 @@
 (function () {
   const { state, imageLoader, canvasView, controls, exporter, maskPainter } = AGM;
 
-  const DEFAULT_IMAGE_SRC = "images/chris-turgeon-AUmq5VsgL3g-unsplash.jpg";
-  const DEFAULT_IMAGE_NAME = "chris-turgeon-AUmq5VsgL3g-unsplash.jpg";
+  const DEFAULT_IMAGE_SRC = "images/default.png";
+  const DEFAULT_IMAGE_NAME = "default.png";
 
   let fileMeta, uploadBtn;
 
