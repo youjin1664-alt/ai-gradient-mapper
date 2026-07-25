@@ -13,8 +13,7 @@ window.AGM = window.AGM || {};
 AGM.mobileLayout = (function () {
   const { state, CONFIG, canvasView } = AGM;
 
-  // Must mirror style.css's mobile media query and mobileOnboarding.js's
-  // MOBILE_QUERY exactly.
+  // Must mirror style.css's mobile media query exactly.
   const MOBILE_QUERY = "(max-width: 768px), (max-height: 500px) and (orientation: landscape)";
 
   const scheduleRegenerate = () => canvasView.scheduleRegenerate();

@@ -352,44 +352,6 @@ button, input {
   transition: opacity 0.15s ease;
 }
 
-/* ---------------------------------- Mobile onboarding ---------------------------------- */
-
-.mobile-onboarding {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 1000000;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
-}
-
-.mobile-onboarding.is-visible {
-  display: block;
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* Full-screen dim — the icon/heading/subtext is the only part that reads
-   differently between portrait and landscape (it just recenters), the
-   backdrop itself always fills the whole viewport. */
-.mobile-onboarding__backdrop {
-  position: fixed;
-  inset: 0;
-  background: #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10%;
-}
-
-.mobile-onboarding__backdrop img {
-  width: 100%;
-  max-width: 210px;
-  height: auto;
-  display: block;
-}
-
 /* ---------------------------------- Mobile-only elements ---------------------------------- */
 /* Hidden by default; shown only inside the mobile media query below. New
    selectors only — nothing existing touched. */
