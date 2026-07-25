@@ -545,7 +545,7 @@ button, input {
     height: 34px;
     margin-top: 0;
     padding: 3px 15px;
-    font-size: 18px;
+    font-size: 14px;
     letter-spacing: -0.046em;
   }
 
@@ -573,7 +573,7 @@ button, input {
   }
 
   .mobile-controls-grid .control__label-row {
-    font-size: 18px;
+    font-size: 13px;
   }
 
   .mobile-next-btn {
