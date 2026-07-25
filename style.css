@@ -539,6 +539,8 @@ button, input {
   .btn--reset {
     flex: none;
     align-self: center;
+    position: relative;
+    top: 1px;
     width: 73px;
     height: 34px;
     margin-top: 0;
@@ -571,7 +573,7 @@ button, input {
   }
 
   .mobile-controls-grid .control__label-row {
-    font-size: 14px;
+    font-size: 18px;
   }
 
   .mobile-next-btn {
