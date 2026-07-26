@@ -643,15 +643,19 @@ button, input {
      same way the main tool's photo card cover-crops an upload, just without
      needing a canvas since there's no mask/circle-gradient step here.
      min() of three terms, each a safety cap on the diameter:
-       - calc(187.2dvh - 524px): this screen's other vertical content
-         subtracted from the available height, so a short real-device
-         viewport (address bar/nav chrome eating into 100dvh) shrinks the
-         circle instead of forcing a scroll.
-       - calc(100vw + 20px): was a strict 100vw (no-bleed) ceiling, but
-         that's the max a circle can be without cropping — asked to grow
-         it further anyway, so this now lets it bleed a small, barely
-         visible 10px past each edge (still clipped by .mobile-onboarding's
-         overflow:hidden). It's the actual binding constraint at ordinary
+       - calc(100dvh - 14.87vw - 172px): this screen's other vertical
+         content, subtracted from the available height, so a short
+         real-device viewport (address bar/nav chrome eating into 100dvh)
+         shrinks the circle instead of forcing a scroll. Unlike a flat
+         dvh-only budget, the 14.87vw term tracks mo_header.jpg's own
+         aspect ratio (its rendered height scales with viewport width), and
+         172px covers margin-top (32) + the caption/gap/button/footer-
+         padding block (~130) plus slack — measured directly against the
+         DOM rather than guessed, after a pure-dvh version kept
+         under/overshooting on narrow-short viewports.
+       - calc(100vw + 28px): a small, barely-visible bleed past both edges
+         (full off-screen bleed and any scrolling were both tried and
+         rejected earlier) — the actual binding constraint at ordinary
          phone widths, since the 165.12vw term below is always bigger and
          never wins on its own.
        - 165.12vw: aspirational size if neither safety cap applied; kept
@@ -663,8 +667,8 @@ button, input {
   .mobile-onboarding__gif {
     flex: none;
     margin-top: 32px;
-    width: min(165.12vw, calc(100vw + 12px), calc(187.2dvh - 545px));
-    height: min(165.12vw, calc(100vw + 12px), calc(187.2dvh - 545px));
+    width: min(165.12vw, calc(100vw + 28px), calc(100dvh - 14.87vw - 172px));
+    height: min(165.12vw, calc(100vw + 28px), calc(100dvh - 14.87vw - 172px));
     border-radius: 50%;
     object-fit: cover;
   }
