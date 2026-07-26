@@ -424,6 +424,10 @@ button, input {
   :root {
     --page-margin: 14px;
     --radius-lg: 20px;
+    /* Tool screen photo card diameter — see .pill-stage-wrapper's longer
+       comment for why this is viewport-proportional instead of a flat
+       307px. */
+    --circle-d: clamp(260px, 78.7vw, 340px);
   }
 
   body {
@@ -489,16 +493,16 @@ button, input {
      no position:absolute, no manual offsets — so DOM order (Reset first,
      see js/mobileLayout.js's prepend) is what puts Reset on top.
 
-     --circle-d drives the circle's diameter as a fraction of viewport width
-     instead of a hard 307px: a fixed px value looks visibly smaller on a
-     wide iPhone than on a narrower Galaxy, even though both render the
-     literal same 307px, because it's a different proportion of each
-     screen. 78.7vw reproduces exactly 307px at the 390px width this was
-     originally measured against, and scales proportionally above/below
-     that so the circle occupies the same relative amount of screen on any
-     device; clamp()'s min/max keep it sane on very narrow or wide phones. */
+     --circle-d (defined on :root above, shared with .mobile-onboarding__gif)
+     drives the circle's diameter as a fraction of viewport width instead of
+     a hard 307px: a fixed px value looks visibly smaller on a wide iPhone
+     than on a narrower Galaxy, even though both render the literal same
+     307px, because it's a different proportion of each screen. 78.7vw
+     reproduces exactly 307px at the 390px width this was originally
+     measured against, and scales proportionally above/below that so the
+     circle occupies the same relative amount of screen on any device;
+     clamp()'s min/max keep it sane on very narrow or wide phones. */
   .pill-stage-wrapper {
-    --circle-d: clamp(260px, 78.7vw, 340px);
     flex: none;
     width: auto;
     height: auto;
@@ -637,15 +641,16 @@ button, input {
 
   /* Circular crop of the (16:9) source gif — object-fit:cover crops it the
      same way the main tool's photo card cover-crops an upload, just without
-     needing a canvas since there's no mask/circle-gradient step here.
-     Sized off the same viewport-proportional approach as the tool screen's
-     --circle-d (see .pill-stage-wrapper) so it scales consistently with it
-     across phone widths instead of being a fixed px guess. */
+     needing a canvas since there's no mask/circle-gradient step here. Bigger
+     proportion of the screen than the tool circle's --circle-d (~79vw) —
+     the reference composition has this one taking up nearly the full
+     width, ~90vw — so it gets its own, larger clamp() rather than sharing
+     --circle-d. */
   .mobile-onboarding__gif {
     flex: none;
     margin-top: 32px;
-    width: clamp(220px, 63vw, 300px);
-    height: clamp(220px, 63vw, 300px);
+    width: clamp(280px, 90vw, 380px);
+    height: clamp(280px, 90vw, 380px);
     border-radius: 50%;
     object-fit: cover;
   }
