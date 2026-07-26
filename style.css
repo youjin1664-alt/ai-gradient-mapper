@@ -633,15 +633,15 @@ button, input {
      the opacity transition below has something to animate — display can't
      be transitioned, only actually-rendered properties like opacity can.
      pointer-events:none keeps it from intercepting taps while invisible.
-     Figma's own Background blur effect: Fill #FFFFFF at 10%, blur 20.765px. */
+     Fill #FFFFFF at 10%, blur 10px. */
   .mobile-export-backdrop {
     display: block;
     position: fixed;
     inset: 0;
     z-index: 5;
     background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20.76498794555664px);
-    -webkit-backdrop-filter: blur(20.76498794555664px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.4s ease;

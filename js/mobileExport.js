@@ -1,9 +1,9 @@
 /* ==========================================================================
    mobileExport.js — mobile-only "Next" flow: blurs the tool screen behind
    the finished circle and offers Download / Share of a 1080x1920 Instagram
-   Story image (random palette background, circle-cropped artwork, "A gentle
-   gaze, for everything else" caption in Pretendard, difference-blended
-   white so it reads against any background color). Purely additive, same
+   Story image (random palette background, circle-cropped artwork, "A
+   Gentle Gaze, For Everything Else" caption in Pretendard, difference-
+   blended white so it reads against any background color). Purely additive, same
    pattern as mobileLayout.js: reads canvasView.compositeLayers() and
    AGM.DEFAULT_PALETTE but never modifies canvasView.js or config.js.
    Total no-op on desktop/tablet.
@@ -18,11 +18,16 @@ AGM.mobileExport = (function () {
   const STORY_H = 1920;
   const CIRCLE_D = 740;
   const CIRCLE_CY = 940;
-  const CAPTION_TEXT = "A gentle gaze, for everything else";
+  const CAPTION_TEXT = "A Gentle Gaze, For Everything Else";
   const CAPTION_Y = 1780;
   const CAPTION_MAX_FONT_PX = 42;
   const CAPTION_MIN_FONT_PX = 22;
   const CAPTION_MAX_WIDTH = STORY_W * 0.82;
+  // Figma gives letter-spacing as -0.72px at an 18px font — kept as that
+  // ratio (-4% of font size) rather than the literal -0.72px, since this
+  // caption's own font-size is auto-fit per line 96 and doesn't render at
+  // a literal 18px on the 1080-wide story canvas.
+  const CAPTION_LETTER_SPACING_RATIO = -0.72 / 18;
 
   let pretendardReady = null;
 
@@ -47,7 +52,7 @@ AGM.mobileExport = (function () {
   function ensurePretendardLoaded() {
     if (!pretendardReady) {
       pretendardReady = document.fonts
-        .load(`600 ${CAPTION_MAX_FONT_PX}px Pretendard`)
+        .load(`500 ${CAPTION_MAX_FONT_PX}px Pretendard`)
         .then(() => document.fonts.ready);
     }
     return pretendardReady;
@@ -91,10 +96,16 @@ AGM.mobileExport = (function () {
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     let fontPx = CAPTION_MAX_FONT_PX;
-    ctx.font = `600 ${fontPx}px Pretendard`;
+    ctx.font = `500 ${fontPx}px Pretendard`;
     while (ctx.measureText(CAPTION_TEXT).width > CAPTION_MAX_WIDTH && fontPx > CAPTION_MIN_FONT_PX) {
       fontPx -= 1;
-      ctx.font = `600 ${fontPx}px Pretendard`;
+      ctx.font = `500 ${fontPx}px Pretendard`;
+    }
+    // ctx.letterSpacing is a newer Canvas 2D addition (Chrome 99+, Safari
+    // 17.4+) — unsupported browsers just silently keep the default 0,
+    // a minor cosmetic-only fallback.
+    if ("letterSpacing" in ctx) {
+      ctx.letterSpacing = `${(fontPx * CAPTION_LETTER_SPACING_RATIO).toFixed(2)}px`;
     }
     ctx.fillText(CAPTION_TEXT, cx, CAPTION_Y);
     ctx.restore();
@@ -120,7 +131,7 @@ AGM.mobileExport = (function () {
 
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         try {
-          await navigator.share({ files: [file], title: "A gentle gaze, for everything else" });
+          await navigator.share({ files: [file], title: CAPTION_TEXT });
         } catch (err) {
           // AbortError just means the user dismissed the native share sheet.
           if (err && err.name !== "AbortError") utils.downloadBlob(blob, "a-gentle-gaze-story.png");
