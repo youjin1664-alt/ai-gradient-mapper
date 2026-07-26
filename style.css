@@ -643,21 +643,22 @@ button, input {
      same way the main tool's photo card cover-crops an upload, just without
      needing a canvas since there's no mask/circle-gradient step here.
      min() of three terms, each a safety cap on the diameter:
-       - calc(130dvh - 364px): this screen's other vertical content
-         (~90px header + 32px margin-top + ~133px caption/gap/button/
-         footer-padding + slack) subtracted from the available height, so
-         a short real-device viewport (address bar/nav chrome eating into
-         100dvh) shrinks the circle instead of forcing a scroll.
-       - calc(100vw - 24px): 1.3x'd this past 100vw (114.7vw) — left
-         unchecked that bleeds off the screen edges, which was tried and
-         rejected earlier, so this caps it at a 12px side margin instead.
-       - 114.7vw: the actual 1.3x'd size; only wins on a tall/narrow
-         viewport where neither safety cap is the binding constraint. */
+       - calc(156dvh - 437px): this screen's other vertical content
+         subtracted from the available height, so a short real-device
+         viewport (address bar/nav chrome eating into 100dvh) shrinks the
+         circle instead of forcing a scroll.
+       - calc(100vw - 8px): the no-bleed width ceiling — bleeding off the
+         screen edges was tried and rejected earlier, so this is the actual
+         binding constraint at ordinary phone widths (down from a 12px
+         side margin to 4px, since the 137.6vw term below is always bigger
+         and never wins on its own).
+       - 137.6vw: aspirational size if neither safety cap applied; kept for
+         headroom on unusually tall/narrow viewports. */
   .mobile-onboarding__gif {
     flex: none;
     margin-top: 32px;
-    width: max(286px, min(114.7vw, calc(100vw - 24px), calc(130dvh - 364px)));
-    height: max(286px, min(114.7vw, calc(100vw - 24px), calc(130dvh - 364px)));
+    width: max(343px, min(137.6vw, calc(100vw - 8px), calc(156dvh - 437px)));
+    height: max(343px, min(137.6vw, calc(100vw - 8px), calc(156dvh - 437px)));
     border-radius: 50%;
     object-fit: cover;
   }
