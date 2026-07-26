@@ -622,14 +622,26 @@ button, input {
     display: none;
   }
 
-  body.mobile-export-active .mobile-export-backdrop {
+  /* display:block unconditionally (not gated by .mobile-export-active) so
+     the opacity transition below has something to animate — display can't
+     be transitioned, only actually-rendered properties like opacity can.
+     pointer-events:none keeps it from intercepting taps while invisible.
+     Figma's own Background blur effect: Fill #FFFFFF at 10%, blur 41.53px. */
+  .mobile-export-backdrop {
     display: block;
     position: fixed;
     inset: 0;
     z-index: 5;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(41.53px);
+    -webkit-backdrop-filter: blur(41.53px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  body.mobile-export-active .mobile-export-backdrop {
+    opacity: 1;
+    pointer-events: auto;
   }
 
   /* Stacked above the backdrop so the circle (a sibling further up the
@@ -639,25 +651,35 @@ button, input {
     z-index: 10;
   }
 
-  body.mobile-export-active .mobile-export-actions {
+  /* Same display-unconditional + opacity-transition treatment as the
+     backdrop above, so the actions fade in together with it. */
+  .mobile-export-actions {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 14px;
+    gap: 15px;
     position: fixed;
     left: 0;
     right: 0;
     bottom: calc(40px + env(safe-area-inset-bottom, 0px));
     z-index: 10;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  body.mobile-export-active .mobile-export-actions {
+    opacity: 1;
+    pointer-events: auto;
   }
 
   /* Both are pre-built button graphics (bg + icon/text baked into the SVG,
      same pattern as onboarding_upload button.svg) rather than CSS-drawn —
-     these elements just size and click-handle them. */
+     these elements just size and click-handle them. 45.69px matches
+     Figma's own Hug height for this button group. */
   .mobile-export-icon-btn {
     flex: none;
-    width: 54px;
-    height: 54px;
+    width: 45.69px;
+    height: 45.69px;
     padding: 0;
     border: none;
     background: none;
@@ -674,7 +696,7 @@ button, input {
 
   .mobile-share-btn {
     flex: none;
-    height: 54px;
+    height: 45.69px;
     padding: 0;
     border: none;
     background: none;
