@@ -647,12 +647,13 @@ button, input {
          subtracted from the available height, so a short real-device
          viewport (address bar/nav chrome eating into 100dvh) shrinks the
          circle instead of forcing a scroll.
-       - 100vw: the no-bleed width ceiling, now at 0 side margin (was 4px)
-         — true edge-to-edge. This is the practical end of the road for
-         "bigger" without either bleeding off-screen or forcing a scroll,
-         both tried and rejected earlier; it's the actual binding
-         constraint at ordinary phone widths, since the 165.12vw term below
-         is always bigger and never wins on its own.
+       - calc(100vw + 20px): was a strict 100vw (no-bleed) ceiling, but
+         that's the max a circle can be without cropping — asked to grow
+         it further anyway, so this now lets it bleed a small, barely
+         visible 10px past each edge (still clipped by .mobile-onboarding's
+         overflow:hidden). It's the actual binding constraint at ordinary
+         phone widths, since the 165.12vw term below is always bigger and
+         never wins on its own.
        - 165.12vw: aspirational size if neither safety cap applied; kept
          for headroom on unusually tall/narrow viewports.
      No floor value here on purpose — an earlier max(412px, min(...)) let
@@ -662,8 +663,8 @@ button, input {
   .mobile-onboarding__gif {
     flex: none;
     margin-top: 32px;
-    width: min(165.12vw, 100vw, calc(187.2dvh - 524px));
-    height: min(165.12vw, 100vw, calc(187.2dvh - 524px));
+    width: min(165.12vw, calc(100vw + 12px), calc(187.2dvh - 545px));
+    height: min(165.12vw, calc(100vw + 12px), calc(187.2dvh - 545px));
     border-radius: 50%;
     object-fit: cover;
   }
