@@ -536,10 +536,10 @@ button, input {
      positioning needed. align-self:center overrides the desktop rule's
      align-self:flex-end (meant for the right panel), which otherwise leaks
      through here and pushes the button to the right instead of centering it.
-     Figma has this frame set to Hug x Hug (73x34 is the *result* of that
-     auto-sizing at 18px text + this padding, not a fixed box) — so width/
-     height are left unset here and the button sizes itself from its
-     padding + text, same as Figma. */
+     Figma has this frame set to Hug x Hug — width/height are left unset
+     here so the button sizes itself from its padding + text, same as
+     Figma. Padding loosened from the strict 3px/15px Figma reading (felt
+     cramped in practice) to a more comfortable 8px/20px. */
   .btn--reset {
     flex: none;
     align-self: center;
@@ -548,9 +548,9 @@ button, input {
     width: auto;
     height: auto;
     margin-top: 0;
-    padding: 3px 15px;
+    padding: 8px 20px;
     font-size: 18px;
-    line-height: 26px;
+    line-height: normal;
     letter-spacing: -0.046em;
   }
 
