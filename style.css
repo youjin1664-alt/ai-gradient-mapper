@@ -641,16 +641,15 @@ button, input {
 
   /* Circular crop of the (16:9) source gif — object-fit:cover crops it the
      same way the main tool's photo card cover-crops an upload, just without
-     needing a canvas since there's no mask/circle-gradient step here. Bigger
-     proportion of the screen than the tool circle's --circle-d (~79vw) —
-     the reference composition has this one taking up nearly the full
-     width, ~90vw — so it gets its own, larger clamp() rather than sharing
-     --circle-d. */
+     needing a canvas since there's no mask/circle-gradient step here.
+     calc(100vw - 64px) keeps exactly 32px of side margin (to the screen
+     edge, not the header gap — margin-top below is a separate, unrelated
+     32px) at any viewport width, clamped only at extremes. */
   .mobile-onboarding__gif {
     flex: none;
     margin-top: 32px;
-    width: clamp(280px, 90vw, 380px);
-    height: clamp(280px, 90vw, 380px);
+    width: clamp(260px, calc(100vw - 64px), 440px);
+    height: clamp(260px, calc(100vw - 64px), 440px);
     border-radius: 50%;
     object-fit: cover;
   }
