@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>AI Gradient Mapper</title>
-<link rel="stylesheet" href="style.css?v=28" />
+<link rel="stylesheet" href="style.css?v=29" />
 </head>
 <body>
 
@@ -79,13 +79,16 @@
     <!-- ============ MOBILE EXPORT BACKDROP + ACTIONS (<=768px only, shown by
          js/mobileExport.js after tapping Next) ============ -->
     <div class="mobile-export-backdrop"></div>
-    <div id="mobileExportActions" class="mobile-export-actions">
-      <button type="button" id="mobileExportIconBtn" class="mobile-export-icon-btn" aria-label="Download image">
-        <img src="images/export.svg" alt="" />
-      </button>
-      <button type="button" id="mobileShareBtn" class="mobile-share-btn" aria-label="Share">
-        <img src="images/share.svg" alt="" />
-      </button>
+    <div id="mobileExportFooter" class="mobile-export-footer">
+      <p class="mobile-export-caption">A gentle gaze, for everything else</p>
+      <div id="mobileExportActions" class="mobile-export-actions">
+        <button type="button" id="mobileExportIconBtn" class="mobile-export-icon-btn" aria-label="Download image">
+          <img src="images/export.svg" alt="" />
+        </button>
+        <button type="button" id="mobileShareBtn" class="mobile-share-btn" aria-label="Share">
+          <img src="images/share.svg" alt="" />
+        </button>
+      </div>
     </div>
 
   </div>

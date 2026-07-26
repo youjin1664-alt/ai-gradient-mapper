@@ -374,7 +374,7 @@ button, input {
 .mobile-controls-card { display: none; }
 .mobile-onboarding { display: none; }
 .mobile-export-backdrop { display: none; }
-.mobile-export-actions { display: none; }
+.mobile-export-footer { display: none; }
 
 /* ---------------------------------- Scrollbars ---------------------------------- */
 
@@ -610,13 +610,12 @@ button, input {
 
   /* ---------------------------------- Mobile export view ---------------------------------- */
   /* Entered by tapping Next (js/mobileExport.js adds .mobile-export-active
-     to <body>) — hides the header/Reset/controls-card and drops a blurred
-     backdrop behind the still-sharp circle, with Download/Share actions
-     below it. Nothing is removed from the DOM, so leaving this view would
-     just be removing the class (no re-entry flow exists yet — out of
-     scope per spec, matches the reference screens having no back
-     button). */
-  body.mobile-export-active .mobile-header,
+     to <body>) — keeps the header, hides Reset/controls-card, and drops a
+     blurred backdrop behind the still-sharp circle, with a caption plus
+     Download/Share actions below it. Nothing is removed from the DOM, so
+     leaving this view would just be removing the class (no re-entry flow
+     exists yet — out of scope per spec, matches the reference screens
+     having no back button). */
   body.mobile-export-active .btn--reset,
   body.mobile-export-active .mobile-controls-card {
     display: none;
@@ -644,20 +643,25 @@ button, input {
     pointer-events: auto;
   }
 
-  /* Stacked above the backdrop so the circle (a sibling further up the
-     DOM) reads sharp against the blurred confetti body background. */
+  /* Stacked above the backdrop so the header and circle (both otherwise
+     unpositioned, which paints them *below* any positioned sibling
+     regardless of z-index) read sharp against the blurred confetti body
+     background instead of getting blurred out along with it. */
+  body.mobile-export-active .mobile-header,
   body.mobile-export-active .pill-stage-wrapper {
     position: relative;
     z-index: 10;
   }
 
-  /* Same display-unconditional + opacity-transition treatment as the
-     backdrop above, so the actions fade in together with it. */
-  .mobile-export-actions {
+  /* Wraps the caption + actions row as one fixed-position group so the
+     caption sits a fixed distance above the buttons regardless of viewport
+     height. Same display-unconditional + opacity-transition treatment as
+     the backdrop above, so both fade in together with it. */
+  .mobile-export-footer {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 15px;
+    gap: 20px;
     position: fixed;
     left: 0;
     right: 0;
@@ -667,9 +671,28 @@ button, input {
     pointer-events: none;
     transition: opacity 0.4s ease;
   }
-  body.mobile-export-active .mobile-export-actions {
+  body.mobile-export-active .mobile-export-footer {
     opacity: 1;
     pointer-events: auto;
+  }
+
+  .mobile-export-caption {
+    margin: 0;
+    color: #0e030c;
+    text-align: center;
+    font-family: "Pretendard", sans-serif;
+    font-size: 14.216px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 150%;
+    letter-spacing: -0.569px;
+  }
+
+  .mobile-export-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
   }
 
   /* Both are pre-built button graphics (bg + icon/text baked into the SVG,
