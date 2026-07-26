@@ -373,6 +373,8 @@ button, input {
 .mobile-header { display: none; }
 .mobile-controls-card { display: none; }
 .mobile-onboarding { display: none; }
+.mobile-export-backdrop { display: none; }
+.mobile-export-actions { display: none; }
 
 /* ---------------------------------- Scrollbars ---------------------------------- */
 
@@ -604,6 +606,87 @@ button, input {
     border-width: 1.74px;
     font-size: 18px;
     letter-spacing: -0.046em;
+  }
+
+  /* ---------------------------------- Mobile export view ---------------------------------- */
+  /* Entered by tapping Next (js/mobileExport.js adds .mobile-export-active
+     to <body>) — hides the header/Reset/controls-card and drops a blurred
+     backdrop behind the still-sharp circle, with Download/Share actions
+     below it. Nothing is removed from the DOM, so leaving this view would
+     just be removing the class (no re-entry flow exists yet — out of
+     scope per spec, matches the reference screens having no back
+     button). */
+  body.mobile-export-active .mobile-header,
+  body.mobile-export-active .btn--reset,
+  body.mobile-export-active .mobile-controls-card {
+    display: none;
+  }
+
+  body.mobile-export-active .mobile-export-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+  }
+
+  /* Stacked above the backdrop so the circle (a sibling further up the
+     DOM) reads sharp against the blurred confetti body background. */
+  body.mobile-export-active .pill-stage-wrapper {
+    position: relative;
+    z-index: 10;
+  }
+
+  body.mobile-export-active .mobile-export-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: calc(40px + env(safe-area-inset-bottom, 0px));
+    z-index: 10;
+  }
+
+  /* Both are pre-built button graphics (bg + icon/text baked into the SVG,
+     same pattern as onboarding_upload button.svg) rather than CSS-drawn —
+     these elements just size and click-handle them. */
+  .mobile-export-icon-btn {
+    flex: none;
+    width: 54px;
+    height: 54px;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+  .mobile-export-icon-btn img {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .mobile-export-icon-btn:disabled {
+    opacity: 0.5;
+  }
+
+  .mobile-share-btn {
+    flex: none;
+    height: 54px;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+  .mobile-share-btn img {
+    display: block;
+    height: 100%;
+    width: auto;
+  }
+  .mobile-share-btn:disabled {
+    opacity: 0.5;
   }
 
   .control input[type="range"]::-webkit-slider-thumb {

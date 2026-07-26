@@ -17,6 +17,7 @@
     controls.init();
     if (AGM.customCursor) AGM.customCursor.init();
     if (AGM.mobileLayout) AGM.mobileLayout.init();
+    if (AGM.mobileExport) AGM.mobileExport.init();
     bindLeftPanel();
     // Mobile starts from the onboarding overlay (see mobileLayout.js)
     // instead of a pre-loaded demo photo — the user's own upload there is

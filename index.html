@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>AI Gradient Mapper</title>
-<link rel="stylesheet" href="style.css?v=25" />
+<link rel="stylesheet" href="style.css?v=27" />
 </head>
 <body>
 
@@ -76,6 +76,18 @@
     <!-- ============ MOBILE CONTROLS CARD (<=768px only, populated by js/mobileLayout.js) ============ -->
     <div id="mobileControlsCard" class="glass-panel mobile-controls-card"></div>
 
+    <!-- ============ MOBILE EXPORT BACKDROP + ACTIONS (<=768px only, shown by
+         js/mobileExport.js after tapping Next) ============ -->
+    <div class="mobile-export-backdrop"></div>
+    <div id="mobileExportActions" class="mobile-export-actions">
+      <button type="button" id="mobileExportIconBtn" class="mobile-export-icon-btn" aria-label="Download image">
+        <img src="images/export.svg" alt="" />
+      </button>
+      <button type="button" id="mobileShareBtn" class="mobile-share-btn" aria-label="Share">
+        <img src="images/share.svg" alt="" />
+      </button>
+    </div>
+
   </div>
 
   <!-- ============ FOOTER ============ -->
@@ -97,7 +109,8 @@
   <script src="js/controls.js?v=2"></script>
   <script src="js/exporter.js?v=2"></script>
   <script src="js/customCursor.js?v=2"></script>
-  <script src="js/mobileLayout.js?v=3"></script>
-  <script src="js/main.js?v=3"></script>
+  <script src="js/mobileLayout.js?v=4"></script>
+  <script src="js/mobileExport.js?v=1"></script>
+  <script src="js/main.js?v=4"></script>
 </body>
 </html>

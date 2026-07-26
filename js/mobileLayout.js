@@ -171,10 +171,12 @@ AGM.mobileLayout = (function () {
     return wrap;
   }
 
-  // Placeholder only — no click behavior yet, per spec (upload/export flow
-  // for mobile is a future step).
+  // Click behavior (entering the export view) is wired by js/mobileExport.js
+  // via this id, not here — keeps the story-image/share pipeline out of this
+  // file's scope.
   function buildNextButton() {
     const btn = document.createElement("button");
+    btn.id = "mobileNextBtn";
     btn.className = "btn mobile-next-btn";
     btn.type = "button";
     btn.textContent = "Next";
