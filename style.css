@@ -372,6 +372,7 @@ button, input {
    selectors only — nothing existing touched. */
 .mobile-header { display: none; }
 .mobile-controls-card { display: none; }
+.mobile-onboarding { display: none; }
 
 /* ---------------------------------- Scrollbars ---------------------------------- */
 
@@ -609,5 +610,77 @@ button, input {
   .control input[type="range"]::-moz-range-thumb {
     width: 12px;
     height: 12px;
+  }
+
+  /* ---------------------------------- Onboarding overlay ---------------------------------- */
+  /* Fixed full-screen layer, shown until the user picks their first photo
+     (js/mobileLayout.js hides it on the shared "agm:imageReady" event) —
+     sits above the tool UI underneath it rather than replacing it in the
+     DOM, so nothing has to wait for onboarding to unmount. Its own
+     .mobile-header reuses the same class (and mo_header sizing/position)
+     as the tool screen's header, just with mo_header.jpg instead of
+     mo_header.png per spec. */
+  .mobile-onboarding {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: #0ed7ff;
+    overflow: hidden;
+  }
+
+  .mobile-onboarding.is-hidden {
+    display: none;
+  }
+
+  /* Circular crop of the (16:9) source gif — object-fit:cover crops it the
+     same way the main tool's photo card cover-crops an upload, just without
+     needing a canvas since there's no mask/circle-gradient step here.
+     Sized off the same viewport-proportional approach as the tool screen's
+     --circle-d (see .pill-stage-wrapper) so it scales consistently with it
+     across phone widths instead of being a fixed px guess. */
+  .mobile-onboarding__gif {
+    flex: none;
+    margin-top: 32px;
+    width: clamp(220px, 63vw, 300px);
+    height: clamp(220px, 63vw, 300px);
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  /* margin-top:auto pushes this group to the bottom of the column
+     regardless of viewport height, matching the reference composition
+     without hardcoding a distance from the gif. */
+  .mobile-onboarding__footer {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .mobile-onboarding__caption {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-primary);
+  }
+
+  .mobile-onboarding__upload-btn {
+    appearance: none;
+    border: none;
+    background: none;
+    padding: 0;
+    margin-top: 19px;
+    width: 355px;
+    max-width: 90vw;
+    cursor: pointer;
+  }
+
+  .mobile-onboarding__upload-btn img {
+    display: block;
+    width: 100%;
+    height: 63px;
   }
 }

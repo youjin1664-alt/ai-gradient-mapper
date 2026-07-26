@@ -4,9 +4,23 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>AI Gradient Mapper</title>
-<link rel="stylesheet" href="style.css?v=7" />
+<link rel="stylesheet" href="style.css?v=8" />
 </head>
 <body>
+
+  <!-- ============ MOBILE ONBOARDING (<=768px only) — shown until the user
+       uploads a photo, then hidden by js/mobileLayout.js. Uses mo_header.jpg
+       (not the mo_header.png the rest of mobile uses) per spec. ============ -->
+  <div id="mobileOnboarding" class="mobile-onboarding">
+    <img class="mobile-header" src="images/mo_header.jpg" alt="every else" />
+    <img class="mobile-onboarding__gif" src="images/example.gif" alt="" />
+    <div class="mobile-onboarding__footer">
+      <p class="mobile-onboarding__caption">Which photo reflects your gaze?</p>
+      <button type="button" id="mobileOnboardingUpload" class="mobile-onboarding__upload-btn">
+        <img src="images/onboarding_upload button.svg" alt="Upload Image" />
+      </button>
+    </div>
+  </div>
 
   <!-- ============ HEADER ============ -->
   <header class="app-header">
@@ -84,7 +98,7 @@
   <script src="js/controls.js?v=2"></script>
   <script src="js/exporter.js?v=2"></script>
   <script src="js/customCursor.js?v=2"></script>
-  <script src="js/mobileLayout.js?v=2"></script>
-  <script src="js/main.js?v=2"></script>
+  <script src="js/mobileLayout.js?v=3"></script>
+  <script src="js/main.js?v=3"></script>
 </body>
 </html>

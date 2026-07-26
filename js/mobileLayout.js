@@ -18,10 +18,37 @@ AGM.mobileLayout = (function () {
 
   const scheduleRegenerate = () => canvasView.scheduleRegenerate();
 
+  function isMobile() {
+    return window.matchMedia(MOBILE_QUERY).matches;
+  }
+
   function init() {
-    if (!window.matchMedia(MOBILE_QUERY).matches) return;
+    if (!isMobile()) return;
     moveResetButton();
     buildControls();
+    initOnboarding();
+  }
+
+  // Wires the onboarding overlay's upload button to the same shared
+  // #fileInput main.js's bindLeftPanel() already listens on — reusing it
+  // (rather than a second file input) means the existing loadFile/
+  // applyLoadedImage pipeline in main.js is the only place a photo actually
+  // gets decoded. This just waits for main.js's "agm:imageReady" (dispatched
+  // once that pipeline finishes) to hide the overlay and reveal the tool
+  // underneath. once:true since mobile has no other upload entry point
+  // after this — there's nothing left to re-hide.
+  function initOnboarding() {
+    const overlay = document.getElementById("mobileOnboarding");
+    const btn = document.getElementById("mobileOnboardingUpload");
+    const fileInput = document.getElementById("fileInput");
+    if (!overlay || !btn || !fileInput) return;
+
+    btn.addEventListener("click", () => fileInput.click());
+    document.addEventListener(
+      "agm:imageReady",
+      () => overlay.classList.add("is-hidden"),
+      { once: true }
+    );
   }
 
   // Relocates (does not clone) the existing desktop reset button onto the
@@ -158,5 +185,5 @@ AGM.mobileLayout = (function () {
     return `${Math.round(v)}${unit}`;
   }
 
-  return { init };
+  return { init, isMobile };
 })();

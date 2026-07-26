@@ -18,7 +18,11 @@
     if (AGM.customCursor) AGM.customCursor.init();
     if (AGM.mobileLayout) AGM.mobileLayout.init();
     bindLeftPanel();
-    loadDefaultImage();
+    // Mobile starts from the onboarding overlay (see mobileLayout.js)
+    // instead of a pre-loaded demo photo — the user's own upload there is
+    // what first populates the canvas.
+    const isMobile = AGM.mobileLayout && AGM.mobileLayout.isMobile();
+    if (!isMobile) loadDefaultImage();
   }
 
   function bindLeftPanel() {
@@ -80,6 +84,9 @@
 
     fileMeta.textContent = fileName;
     canvasView.setImage(photoCanvas);
+    // mobileLayout.js listens for this to dismiss the onboarding overlay
+    // once a real photo (upload or default) is actually on the canvas.
+    document.dispatchEvent(new CustomEvent("agm:imageReady"));
   }
 
   // Loads the built-in demo image through the exact same cover-fit-crop +
