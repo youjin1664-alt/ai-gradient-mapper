@@ -632,7 +632,14 @@ button, input {
     inset: 0;
     z-index: 1000;
     background: #0ed7ff;
-    overflow: hidden;
+    /* The gif circle bleeds past the left/right edges on purpose (clipped
+       by overflow-x:hidden) — but it's tall enough now that on shorter
+       viewports the header+circle can exceed 100dvh, which would push the
+       caption/upload button below the fold. overflow-y:auto (instead of
+       hidden) lets that be reachable by scrolling instead of clipping it
+       away entirely. */
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   .mobile-onboarding.is-hidden {
@@ -641,17 +648,17 @@ button, input {
 
   /* Circular crop of the (16:9) source gif — object-fit:cover crops it the
      same way the main tool's photo card cover-crops an upload, just without
-     needing a canvas since there's no mask/circle-gradient step here. 32px
-     side margin still read too small — pushed to a 12px margin instead
-     (100vw - 24px) to get as close to the requested 1.5x as fits without
-     overflowing the screen (a literal 1.5x of the 32px-margin size would be
-     wider than the viewport itself). margin-top (header-to-circle gap)
-     stays a separate, unrelated 32px. */
+     needing a canvas since there's no mask/circle-gradient step here. Now
+     bigger than the viewport itself (~2x the previous 12px-margin size) so
+     it bleeds off both the left and right edges — .mobile-onboarding's
+     overflow:hidden crops it there, and align-items:center on the column
+     keeps the bleed symmetric. margin-top (header-to-circle gap) stays a
+     separate, unrelated 32px. */
   .mobile-onboarding__gif {
     flex: none;
     margin-top: 32px;
-    width: clamp(280px, calc(100vw - 24px), 460px);
-    height: clamp(280px, calc(100vw - 24px), 460px);
+    width: clamp(600px, 190vw, 820px);
+    height: clamp(600px, 190vw, 820px);
     border-radius: 50%;
     object-fit: cover;
   }
