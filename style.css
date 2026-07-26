@@ -642,17 +642,20 @@ button, input {
   /* Circular crop of the (16:9) source gif — object-fit:cover crops it the
      same way the main tool's photo card cover-crops an upload, just without
      needing a canvas since there's no mask/circle-gradient step here.
-     Reverted off the off-screen "bleed" experiment (rejected — it forced
-     scrolling to reach the upload button) back to the original launch
-     sizing, clamp(220px, 63vw, 300px), then scaled that by 1.4x. Stays
-     safely within the viewport at ordinary phone widths (~344px at 390,
-     margin ~23px each side) — no crop/scroll needed. margin-top
-     (header-to-circle gap) stays a separate, unrelated 32px. */
+     A pure vw-based width (88.2vw) kept forcing a scroll to reach the
+     caption/button on real devices: their *height* budget (short address
+     bar + nav chrome eating into 100dvh) is what actually limits how big
+     this can get, and width alone can't see that. min() with a
+     100dvh-based term caps the diameter by whichever is smaller — on a
+     short viewport the height term wins and the circle shrinks to fit; on
+     a normal one the 88.2vw term wins as before. The subtracted 280px is
+     this screen's other vertical content: ~90px header + 32px margin-top
+     + ~133px caption/gap/button/footer-padding + a little slack. */
   .mobile-onboarding__gif {
     flex: none;
     margin-top: 32px;
-    width: clamp(308px, 88.2vw, 420px);
-    height: clamp(308px, 88.2vw, 420px);
+    width: max(220px, min(88.2vw, calc(100dvh - 280px)));
+    height: max(220px, min(88.2vw, calc(100dvh - 280px)));
     border-radius: 50%;
     object-fit: cover;
   }
