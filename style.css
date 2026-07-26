@@ -643,13 +643,13 @@ button, input {
      same way the main tool's photo card cover-crops an upload, just without
      needing a canvas since there's no mask/circle-gradient step here.
      min() of three terms, each a safety cap on the diameter:
-       - calc(100dvh - 14.87vw - 171px): this screen's other vertical
+       - calc(100dvh - 14.87vw - 166px): this screen's other vertical
          content, subtracted from the available height, so a short
          real-device viewport (address bar/nav chrome eating into 100dvh)
          shrinks the circle instead of forcing a scroll. The 14.87vw term
          tracks mo_header.jpg's own aspect ratio (its rendered height
-         scales with viewport width); 171px covers margin-top (32) + the
-         fixed 5px gap to the footer (see .mobile-onboarding__footer) +
+         scales with viewport width); 166px covers margin-top (32) + no
+         more gap to the footer (0px, see .mobile-onboarding__footer) +
          the caption/gap/button/footer-padding block (134px) — measured
          directly against the DOM rather than guessed.
        - calc(100vw + 60px): a small bleed past both edges (full
@@ -666,20 +666,20 @@ button, input {
   .mobile-onboarding__gif {
     flex: none;
     margin-top: 32px;
-    width: min(198.14vw, calc(100vw + 60px), calc(100dvh - 14.87vw - 171px));
-    height: min(198.14vw, calc(100vw + 60px), calc(100dvh - 14.87vw - 171px));
+    width: min(198.14vw, calc(100vw + 60px), calc(100dvh - 14.87vw - 166px));
+    height: min(198.14vw, calc(100vw + 60px), calc(100dvh - 14.87vw - 166px));
     border-radius: 50%;
     object-fit: cover;
   }
 
-  /* Fixed 5px gap from the gif circle above (was margin-top:auto, which
-     pushed this group all the way to the bottom of the column regardless
-     of viewport height — now the gif's own position stays put and this
-     group sits a constant distance below it instead, per spec). Shrunk
-     further (30px -> 5px) so the group sits higher even as the gif above
-     it grows taller. */
+  /* No gap from the gif circle above (was margin-top:auto, which pushed
+     this group all the way to the bottom of the column regardless of
+     viewport height — now the gif's own position stays put and this
+     group sits directly below it instead, per spec). Shrunk to 0
+     (30px -> 5px -> 0) to raise the group as far as it goes without
+     overlapping the circle. */
   .mobile-onboarding__footer {
-    margin-top: 5px;
+    margin-top: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
