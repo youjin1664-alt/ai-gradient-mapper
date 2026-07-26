@@ -615,25 +615,33 @@ button, input {
      Download/Share actions below it. Nothing is removed from the DOM, so
      leaving this view would just be removing the class (no re-entry flow
      exists yet — out of scope per spec, matches the reference screens
-     having no back button). */
+     having no back button).
+
+     visibility:hidden (not display:none) on Reset/controls-card: display:
+     none would've pulled them out of .app-shell's flex flow, and since the
+     circle centers *together* with them via justify-content:center, that
+     shifted the circle down the moment this view was entered (a taller
+     flex group centers higher than a short one). visibility:hidden keeps
+     their layout space reserved, so the circle's own position is pixel-
+     identical between the editing screen and this one. */
   body.mobile-export-active .btn--reset,
   body.mobile-export-active .mobile-controls-card {
-    display: none;
+    visibility: hidden;
   }
 
   /* display:block unconditionally (not gated by .mobile-export-active) so
      the opacity transition below has something to animate — display can't
      be transitioned, only actually-rendered properties like opacity can.
      pointer-events:none keeps it from intercepting taps while invisible.
-     Figma's own Background blur effect: Fill #FFFFFF at 10%, blur 41.53px. */
+     Figma's own Background blur effect: Fill #FFFFFF at 10%, blur 20.765px. */
   .mobile-export-backdrop {
     display: block;
     position: fixed;
     inset: 0;
     z-index: 5;
     background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(41.53px);
-    -webkit-backdrop-filter: blur(41.53px);
+    backdrop-filter: blur(20.76498794555664px);
+    -webkit-backdrop-filter: blur(20.76498794555664px);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.4s ease;
