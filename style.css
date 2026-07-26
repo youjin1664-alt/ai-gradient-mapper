@@ -486,8 +486,18 @@ button, input {
   /* Outer flex column for the mobile "stage": the Reset button followed by
      the circular canvas frame, spaced by a 21px gap. Pure document flow —
      no position:absolute, no manual offsets — so DOM order (Reset first,
-     see js/mobileLayout.js's prepend) is what puts Reset on top. */
+     see js/mobileLayout.js's prepend) is what puts Reset on top.
+
+     --circle-d drives the circle's diameter as a fraction of viewport width
+     instead of a hard 307px: a fixed px value looks visibly smaller on a
+     wide iPhone than on a narrower Galaxy, even though both render the
+     literal same 307px, because it's a different proportion of each
+     screen. 78.7vw reproduces exactly 307px at the 390px width this was
+     originally measured against, and scales proportionally above/below
+     that so the circle occupies the same relative amount of screen on any
+     device; clamp()'s min/max keep it sane on very narrow or wide phones. */
   .pill-stage-wrapper {
+    --circle-d: clamp(260px, 78.7vw, 340px);
     flex: none;
     width: auto;
     height: auto;
@@ -497,37 +507,39 @@ button, input {
     gap: 21px;
   }
 
-  /* Fixed 307x307 circular "window": flex-centers the 472x472
-     #canvasWrapper inside it and clips its overflow. Only a box in the
-     mobile media query — display:contents everywhere else (see base rule
-     near .canvas-wrapper), so desktop/tablet are untouched. */
+  /* Responsive circular "window" (see --circle-d above): flex-centers the
+     scaled #canvasWrapper inside it and clips its overflow. Only a box in
+     the mobile media query — display:contents everywhere else (see base
+     rule near .canvas-wrapper), so desktop/tablet are untouched. */
   .canvas-frame {
     display: flex;
     align-items: center;
     justify-content: center;
     flex: none;
-    width: 307px;
-    height: 307px;
+    width: var(--circle-d);
+    height: var(--circle-d);
     overflow: hidden;
   }
 
   /* True circle per the Figma spec, without touching pillPath()/circleEngine
-     (still an unmodified stadium internally). #canvasWrapper is a 472x472
-     square — applyFitScale() (unmodified) reads its clientWidth/Height and,
-     since 1200:780 is wider than tall, naturally comes out width-bound:
-     scale = 472/1200 ≈ 0.393 -> canvas renders at ~472x307. A 153.5px-radius
-     clip-path centered in that 472x472 box exactly matches the canvas's own
-     307px rendered height (472/2 - 153.5 = 82.5 = (472-307)/2, the canvas's
-     vertical centering gap), so the circle has zero empty margin top/bottom
-     and the canvas's full 472px width comfortably covers it side to side.
-     .canvas-frame (307x307, overflow:hidden) matches that same math, so it
-     clips nothing further — it only exists to give the visible circle a
-     real, flex-participating layout box. */
+     (still an unmodified stadium internally). At the reference --circle-d
+     of 307px, #canvasWrapper is a 472x472 square — applyFitScale()
+     (unmodified) reads its clientWidth/Height and, since 1200:780 is wider
+     than tall, naturally comes out width-bound: scale = 472/1200 ≈ 0.393 ->
+     canvas renders at ~472x307. A 153.5px-radius clip-path centered in that
+     472x472 box exactly matches the canvas's own 307px rendered height
+     (472/2 - 153.5 = 82.5 = (472-307)/2, the canvas's vertical centering
+     gap), so the circle has zero empty margin top/bottom and the canvas's
+     full 472px width comfortably covers it side to side. Both figures now
+     scale off --circle-d (472/307 and 1/2 are exact ratios) so that math
+     holds at every size, and .canvas-frame (overflow:hidden) clips nothing
+     further — it only exists to give the visible circle a real,
+     flex-participating layout box. */
   #canvasWrapper {
     flex: none;
-    width: 472px;
-    height: 472px;
-    clip-path: circle(153.5px at center);
+    width: calc(var(--circle-d) * 472 / 307);
+    height: calc(var(--circle-d) * 472 / 307);
+    clip-path: circle(calc(var(--circle-d) / 2) at center);
   }
 
   /* Relocated (see js/mobileLayout.js) reset button — now a normal flex
