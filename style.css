@@ -642,20 +642,22 @@ button, input {
   /* Circular crop of the (16:9) source gif — object-fit:cover crops it the
      same way the main tool's photo card cover-crops an upload, just without
      needing a canvas since there's no mask/circle-gradient step here.
-     A pure vw-based width (88.2vw) kept forcing a scroll to reach the
-     caption/button on real devices: their *height* budget (short address
-     bar + nav chrome eating into 100dvh) is what actually limits how big
-     this can get, and width alone can't see that. min() with a
-     100dvh-based term caps the diameter by whichever is smaller — on a
-     short viewport the height term wins and the circle shrinks to fit; on
-     a normal one the 88.2vw term wins as before. The subtracted 280px is
-     this screen's other vertical content: ~90px header + 32px margin-top
-     + ~133px caption/gap/button/footer-padding + a little slack. */
+     min() of three terms, each a safety cap on the diameter:
+       - calc(130dvh - 364px): this screen's other vertical content
+         (~90px header + 32px margin-top + ~133px caption/gap/button/
+         footer-padding + slack) subtracted from the available height, so
+         a short real-device viewport (address bar/nav chrome eating into
+         100dvh) shrinks the circle instead of forcing a scroll.
+       - calc(100vw - 24px): 1.3x'd this past 100vw (114.7vw) — left
+         unchecked that bleeds off the screen edges, which was tried and
+         rejected earlier, so this caps it at a 12px side margin instead.
+       - 114.7vw: the actual 1.3x'd size; only wins on a tall/narrow
+         viewport where neither safety cap is the binding constraint. */
   .mobile-onboarding__gif {
     flex: none;
     margin-top: 32px;
-    width: max(220px, min(88.2vw, calc(100dvh - 280px)));
-    height: max(220px, min(88.2vw, calc(100dvh - 280px)));
+    width: max(286px, min(114.7vw, calc(100vw - 24px), calc(130dvh - 364px)));
+    height: max(286px, min(114.7vw, calc(100vw - 24px), calc(130dvh - 364px)));
     border-radius: 50%;
     object-fit: cover;
   }
