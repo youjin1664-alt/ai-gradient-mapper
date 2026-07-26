@@ -641,28 +641,32 @@ button, input {
 
   /* Circular crop of the (16:9) source gif — object-fit:cover crops it the
      same way the main tool's photo card cover-crops an upload, just without
-     needing a canvas since there's no mask/circle-gradient step here.
-     calc(100vw - 64px) keeps exactly 32px of side margin (to the screen
-     edge, not the header gap — margin-top below is a separate, unrelated
-     32px) at any viewport width, clamped only at extremes. */
+     needing a canvas since there's no mask/circle-gradient step here. 32px
+     side margin still read too small — pushed to a 12px margin instead
+     (100vw - 24px) to get as close to the requested 1.5x as fits without
+     overflowing the screen (a literal 1.5x of the 32px-margin size would be
+     wider than the viewport itself). margin-top (header-to-circle gap)
+     stays a separate, unrelated 32px. */
   .mobile-onboarding__gif {
     flex: none;
     margin-top: 32px;
-    width: clamp(260px, calc(100vw - 64px), 440px);
-    height: clamp(260px, calc(100vw - 64px), 440px);
+    width: clamp(280px, calc(100vw - 24px), 460px);
+    height: clamp(280px, calc(100vw - 24px), 460px);
     border-radius: 50%;
     object-fit: cover;
   }
 
   /* margin-top:auto pushes this group to the bottom of the column
      regardless of viewport height, matching the reference composition
-     without hardcoding a distance from the gif. */
+     without hardcoding a distance from the gif. padding-bottom's base
+     28px -> 31px nudges the whole group (caption + button, whose own
+     19px gap is unchanged) 3px further from the bottom edge, i.e. up. */
   .mobile-onboarding__footer {
     margin-top: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(31px + env(safe-area-inset-bottom, 0px));
   }
 
   .mobile-onboarding__caption {
