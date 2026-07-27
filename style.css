@@ -754,12 +754,20 @@ button, input {
 
   /* ---------------------------------- Onboarding overlay ---------------------------------- */
   /* Fixed full-screen layer, shown until the user picks their first photo
-     (js/mobileLayout.js hides it on the shared "agm:imageReady" event) —
-     sits above the tool UI underneath it rather than replacing it in the
-     DOM, so nothing has to wait for onboarding to unmount. Its own
+     (js/mobileLayout.js adds .is-hidden on the shared "agm:imageReady"
+     event) — sits above the tool UI underneath it rather than replacing it
+     in the DOM, so nothing has to wait for onboarding to unmount. Its own
      .mobile-header reuses the same class (and mo_header sizing/position)
      as the tool screen's header, just with mo_header.jpg instead of
-     mo_header.png per spec. */
+     mo_header.png per spec.
+
+     .is-hidden fades this out via opacity instead of an instant
+     display:none, so the tool screen underneath (already rendered — see
+     above) reveals itself smoothly rather than snapping into view.
+     pointer-events:none stops it from intercepting taps once invisible;
+     no explicit display:none afterward needed since position:fixed
+     already keeps it out of every other element's layout regardless of
+     display. */
   .mobile-onboarding {
     display: flex;
     flex-direction: column;
@@ -769,10 +777,13 @@ button, input {
     z-index: 1000;
     background: #0ed7ff;
     overflow: hidden;
+    opacity: 1;
+    transition: opacity 0.4s ease;
   }
 
   .mobile-onboarding.is-hidden {
-    display: none;
+    opacity: 0;
+    pointer-events: none;
   }
 
   /* Circular crop of the (16:9) source gif — object-fit:cover crops it the
