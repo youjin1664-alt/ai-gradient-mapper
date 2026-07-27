@@ -2,9 +2,10 @@
    mobileExport.js — mobile-only "Next" flow: blurs the tool screen behind
    the finished circle and offers Download / Share of a 1080x1920 Instagram
    Story image (random palette background, circle-cropped artwork, "A
-   Gentle Gaze, For Everything Else" caption in Pretendard, difference-
-   blended white so it reads against any background color). Purely additive, same
-   pattern as mobileLayout.js: reads canvasView.compositeLayers() and
+   Gentle Gaze, For Everything Else" caption in Pretendard plus a small
+   Samsung Design Membership credit line in SF Pro, both difference-
+   blended white so they read against any background color). Purely
+   additive, same pattern as mobileLayout.js: reads canvasView.compositeLayers() and
    AGM.DEFAULT_PALETTE but never modifies canvasView.js or config.js.
    Total no-op on desktop/tablet.
    ========================================================================== */
@@ -28,6 +29,21 @@ AGM.mobileExport = (function () {
   // caption's own font-size is auto-fit per line 96 and doesn't render at
   // a literal 18px on the 1080-wide story canvas.
   const CAPTION_LETTER_SPACING_RATIO = -0.72 / 18;
+
+  // Bottom fine-print credit — unlike the caption above, this spec was
+  // given directly for the 1080-wide story canvas, so its px values are
+  // used literally rather than treated as a ratio.
+  const CREDIT_LINES = ["© 2026 Samsung Design Membership.", "All Rights Reserved"];
+  const CREDIT_FONT_PX = 14.574;
+  const CREDIT_FONT_WEIGHT = 510;
+  const CREDIT_LINE_HEIGHT_PX = 17.489;
+  const CREDIT_LETTER_SPACING_PX = -0.291;
+  const CREDIT_FIRST_LINE_Y = 1858;
+  // SF Pro is Apple's system font — not bundled (Apple doesn't allow
+  // redistributing it), so this only renders as true SF Pro on Apple
+  // devices that already have it installed; elsewhere it falls back to
+  // the platform's default sans-serif.
+  const CREDIT_FONT_FAMILY = '"SF Pro", -apple-system, BlinkMacSystemFont, sans-serif';
 
   let pretendardReady = null;
 
@@ -108,6 +124,18 @@ AGM.mobileExport = (function () {
       ctx.letterSpacing = `${(fontPx * CAPTION_LETTER_SPACING_RATIO).toFixed(2)}px`;
     }
     ctx.fillText(CAPTION_TEXT, cx, CAPTION_Y);
+    ctx.restore();
+
+    ctx.save();
+    ctx.globalCompositeOperation = "difference";
+    ctx.fillStyle = "#FFFFFF";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.font = `${CREDIT_FONT_WEIGHT} ${CREDIT_FONT_PX}px ${CREDIT_FONT_FAMILY}`;
+    if ("letterSpacing" in ctx) ctx.letterSpacing = `${CREDIT_LETTER_SPACING_PX}px`;
+    CREDIT_LINES.forEach((line, i) => {
+      ctx.fillText(line, cx, CREDIT_FIRST_LINE_Y + i * CREDIT_LINE_HEIGHT_PX);
+    });
     ctx.restore();
 
     return new Promise((resolve) => out.toBlob(resolve, "image/png"));
