@@ -29,6 +29,11 @@ AGM.mobileExport = (function () {
   // a literal 18px on the 1080-wide story canvas.
   const CAPTION_LETTER_SPACING_RATIO = -0.72 / 18;
 
+  // Every other palette color has an even 1-in-12 shot; "Soft Yellow" gets
+  // 3x that so it shows up noticeably more often without dominating (~1 in
+  // 4-5 exports on average rather than every time).
+  const BG_COLOR_WEIGHTS = { "Soft Yellow": 3 };
+
   let pretendardReady = null;
   // Pre-warmed the moment the export view opens (see init() below) instead
   // of built fresh on click — navigator.share() only counts as triggered
@@ -61,6 +66,20 @@ AGM.mobileExport = (function () {
     return storyBlobPromise;
   }
 
+  function pickRandomBackgroundColor() {
+    const weighted = AGM.DEFAULT_PALETTE.map((c) => ({
+      hex: c.hex,
+      weight: BG_COLOR_WEIGHTS[c.name] || 1,
+    }));
+    const total = weighted.reduce((sum, c) => sum + c.weight, 0);
+    let r = Math.random() * total;
+    for (const c of weighted) {
+      if (r < c.weight) return c.hex;
+      r -= c.weight;
+    }
+    return weighted[weighted.length - 1].hex;
+  }
+
   // Loaded once and cached — repeat downloads/shares reuse the same
   // already-resolved promise instead of re-requesting the font.
   function ensurePretendardLoaded() {
@@ -88,7 +107,7 @@ AGM.mobileExport = (function () {
     out.height = STORY_H;
     const ctx = out.getContext("2d");
 
-    const bg = AGM.DEFAULT_PALETTE[Math.floor(Math.random() * AGM.DEFAULT_PALETTE.length)].hex;
+    const bg = pickRandomBackgroundColor();
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, STORY_W, STORY_H);
 
