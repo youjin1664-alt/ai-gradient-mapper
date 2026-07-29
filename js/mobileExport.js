@@ -162,7 +162,16 @@ AGM.mobileExport = (function () {
       const blob = await getStoryBlob();
       const file = new File([blob], "a-gentle-gaze-story.png", { type: "image/png" });
 
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      // Only skip straight to download when canShare is present AND
+      // explicitly says no — some browsers (Samsung Internet in
+      // particular, across several versions) support share()-with-files
+      // without implementing canShare() at all, so treating "canShare is
+      // missing" the same as "unsupported" was wrongly forcing every one
+      // of those browsers down the download path even though share()
+      // itself would have worked.
+      const explicitlyUnsupported = navigator.canShare && !navigator.canShare({ files: [file] });
+
+      if (navigator.share && !explicitlyUnsupported) {
         try {
           await navigator.share({ files: [file], title: CAPTION_TEXT });
         } catch (err) {
