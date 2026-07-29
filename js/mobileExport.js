@@ -46,6 +46,14 @@ AGM.mobileExport = (function () {
   const CREDIT_FONT_FAMILY = '"SF Pro", -apple-system, BlinkMacSystemFont, sans-serif';
 
   let pretendardReady = null;
+  // Pre-warmed the moment the export view opens (see init() below) instead
+  // of built fresh on click — navigator.share() only counts as triggered
+  // by the user gesture if it's called with no *macrotask* delay after the
+  // click (a network font fetch or canvas toBlob() encoding easily blows
+  // past that window). Awaiting an already-resolved promise only costs a
+  // microtask tick, which every browser's "user activation" check tolerates,
+  // so by the time the user actually taps Share this is normally done.
+  let storyBlobPromise = null;
 
   function init() {
     if (!AGM.mobileLayout || !AGM.mobileLayout.isMobile()) return;
@@ -57,10 +65,16 @@ AGM.mobileExport = (function () {
 
     nextBtn.addEventListener("click", () => {
       document.body.classList.add("mobile-export-active");
+      storyBlobPromise = buildStoryBlob();
     });
 
     if (iconBtn) iconBtn.addEventListener("click", () => handleDownload(iconBtn));
     if (shareBtn) shareBtn.addEventListener("click", () => handleShare(shareBtn));
+  }
+
+  function getStoryBlob() {
+    if (!storyBlobPromise) storyBlobPromise = buildStoryBlob();
+    return storyBlobPromise;
   }
 
   // Loaded once and cached — repeat downloads/shares reuse the same
@@ -144,7 +158,7 @@ AGM.mobileExport = (function () {
   async function handleDownload(btn) {
     btn.disabled = true;
     try {
-      const blob = await buildStoryBlob();
+      const blob = await getStoryBlob();
       utils.downloadBlob(blob, "a-gentle-gaze-story.png");
     } finally {
       btn.disabled = false;
@@ -154,7 +168,7 @@ AGM.mobileExport = (function () {
   async function handleShare(btn) {
     btn.disabled = true;
     try {
-      const blob = await buildStoryBlob();
+      const blob = await getStoryBlob();
       const file = new File([blob], "a-gentle-gaze-story.png", { type: "image/png" });
 
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
