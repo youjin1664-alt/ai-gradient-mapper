@@ -68,7 +68,7 @@ AGM.canvasView = (function () {
     // (If the file is ever swapped for one with a small intrinsic size
     // again, pass rasterWidth/rasterHeight to loadBitmap() to force a
     // sharper decode — see its doc comment below.)
-    loadBitmap("images/image logo.svg", (bmp) => {
+    loadBitmap("images/image logo.svg?v=2", (bmp) => {
       imageLogoBitmap = bmp;
       repaint();
     });
