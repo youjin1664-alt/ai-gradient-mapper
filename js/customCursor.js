@@ -49,10 +49,15 @@ AGM.customCursor = (function () {
 
     // Only tracked/shown while the pointer is over the pill image itself —
     // everywhere else (panels, buttons, page background) uses the normal
-    // system cursor.
-    target.addEventListener("mouseenter", onEnterTarget);
-    target.addEventListener("mousemove", onMouseMove);
-    target.addEventListener("mouseleave", onLeaveTarget);
+    // system cursor. Pointer events (not mouse events) on purpose:
+    // maskPainter.js's own pointermove handler calls e.preventDefault()
+    // while actively dragging to paint, which per spec suppresses the
+    // browser's synthesized mousemove compatibility event — so a
+    // mousemove-based cursor would freeze in place for the entire drag.
+    // pointermove isn't affected by another listener's preventDefault().
+    target.addEventListener("pointerenter", onEnterTarget);
+    target.addEventListener("pointermove", onMouseMove);
+    target.addEventListener("pointerleave", onLeaveTarget);
 
     // On mobile there's no real hover — the "Drag" cursor should only show
     // during an active touch-drag on the canvas instead. Entirely additive:
