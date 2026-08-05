@@ -23,6 +23,18 @@ AGM.canvasView = (function () {
   // skipped on mobile (see drawFrameChrome) per the mobile design spec.
   const MOBILE_QUERY = "(max-width: 768px), (max-height: 500px) and (orientation: landscape)";
 
+  // One-off: desktop watermark logo hidden for a fixed 2-hour window, then
+  // back on its own — a plain wall-clock check evaluated on every draw, so
+  // it reverts automatically with no scheduled job or follow-up deploy
+  // needed. Safe to delete this block (and its use in drawFrameChrome)
+  // once the window has passed.
+  const LOGO_HIDDEN_FROM = new Date("2026-08-05T12:22:00Z").getTime();
+  const LOGO_HIDDEN_UNTIL = new Date("2026-08-05T14:22:00Z").getTime();
+  function isLogoTemporarilyHidden() {
+    const now = Date.now();
+    return now >= LOGO_HIDDEN_FROM && now < LOGO_HIDDEN_UNTIL;
+  }
+
   let canvas, ctx, wrapper, stage;
   let circlesLayer, circlesLayerCtx;
   let imageLogoBitmap = null;
@@ -186,8 +198,11 @@ AGM.canvasView = (function () {
     // demo image (main.js loads it through the exact same pipeline as a
     // real upload), so behavior is identical before and after the user
     // swaps in their own photo. Skipped on mobile per the mobile design
-    // spec (no watermark on the circular card).
-    if (state.hasImage && !window.matchMedia(MOBILE_QUERY).matches) drawCaption(targetCtx, width, height);
+    // spec (no watermark on the circular card), and temporarily skipped
+    // during LOGO_HIDDEN_FROM..LOGO_HIDDEN_UNTIL above.
+    if (state.hasImage && !window.matchMedia(MOBILE_QUERY).matches && !isLogoTemporarilyHidden()) {
+      drawCaption(targetCtx, width, height);
+    }
   }
 
   function drawCaption(targetCtx, width, height) {
