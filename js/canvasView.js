@@ -28,8 +28,8 @@ AGM.canvasView = (function () {
   // it reverts automatically with no scheduled job or follow-up deploy
   // needed. Safe to delete this block (and its use in drawFrameChrome)
   // once the window has passed.
-  const LOGO_HIDDEN_FROM = new Date("2026-08-05T12:22:00Z").getTime();
-  const LOGO_HIDDEN_UNTIL = new Date("2026-08-05T14:22:00Z").getTime();
+  const LOGO_HIDDEN_FROM = new Date("2026-08-06T05:43:00Z").getTime();
+  const LOGO_HIDDEN_UNTIL = new Date("2026-08-06T07:43:00Z").getTime();
   function isLogoTemporarilyHidden() {
     const now = Date.now();
     return now >= LOGO_HIDDEN_FROM && now < LOGO_HIDDEN_UNTIL;
