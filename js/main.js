@@ -12,6 +12,11 @@
   let fileMeta, uploadBtn;
 
   function init() {
+    const isMobile = AGM.mobileLayout && AGM.mobileLayout.isMobile();
+    // Mobile-only default — still just a starting point, the user can drag
+    // the slider to any value afterward like on desktop.
+    if (isMobile) state.settings.circleSize = 31;
+
     canvasView.init();
     maskPainter.init();
     controls.init();
@@ -22,7 +27,6 @@
     // Mobile starts from the onboarding overlay (see mobileLayout.js)
     // instead of a pre-loaded demo photo — the user's own upload there is
     // what first populates the canvas.
-    const isMobile = AGM.mobileLayout && AGM.mobileLayout.isMobile();
     if (!isMobile) loadDefaultImage();
   }
 
