@@ -72,6 +72,6 @@ AGM.DEFAULT_SETTINGS = {
   opacity: 100, // fixed, not user-editable — kept only so paintCircles()'s signature is untouched
   randomSize: 30, // 0-100
   randomPosition: 20, // 0-100
-  edgeSoftness: 15, // 0-100
+  edgeSoftness: 0, // 0-100
   colorMix: 100, // 0-100 — 0 = strict nearest-palette-color match, 100 = colors freely mixed/randomized
 };
